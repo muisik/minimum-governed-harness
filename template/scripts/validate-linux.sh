@@ -29,6 +29,41 @@ WARNINGS="$TMP/warnings"
 
 error() { printf 'ERROR %s\n' "$*" | tee -a "$ERRORS" >&2; }
 warn() { printf 'WARN  %s\n' "$*" | tee -a "$WARNINGS" >&2; }
+update_notice() { printf 'UPDATE %s\n' "$*" >&2; }
+
+check_for_update() {
+  [ "${CONTEXTRAIL_NO_UPDATE_CHECK:-0}" = "1" ] && return 0
+
+  version_file="$ROOT/.contextrail-version"
+  [ -f "$version_file" ] || return 0
+
+  local_version=$(tr -d '[:space:]' < "$version_file")
+  printf '%s\n' "$local_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || return 0
+
+  version_url="https://raw.githubusercontent.com/muisik/contextrail-template/main/.contextrail-version"
+  latest_version=""
+  if command -v curl >/dev/null 2>&1; then
+    latest_version=$(curl -fsSL --connect-timeout 2 --max-time 3 "$version_url" 2>/dev/null || true)
+  elif command -v wget >/dev/null 2>&1; then
+    latest_version=$(wget -qO- -T 3 "$version_url" 2>/dev/null || true)
+  else
+    return 0
+  fi
+
+  latest_version=$(printf '%s' "$latest_version" | tr -d '[:space:]')
+  printf '%s\n' "$latest_version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' || return 0
+
+  if awk -v l="$local_version" -v r="$latest_version" 'BEGIN {
+    split(l,lv,"."); split(r,rv,".")
+    for (i=1; i<=3; i++) {
+      if ((rv[i]+0) > (lv[i]+0)) exit 0
+      if ((rv[i]+0) < (lv[i]+0)) exit 1
+    }
+    exit 1
+  }'; then
+    update_notice "ContextRail $latest_version is available (installed: $local_version). No files were changed."
+  fi
+}
 
 SYSTEM="$MEMORY/SYSTEM.md"
 BOARD="$MEMORY/BOARD.md"
@@ -270,6 +305,8 @@ find "$ROOT" \
       fi
     done < "$TMP/trace-lines"
   done
+
+check_for_update
 
 error_count=$(wc -l < "$ERRORS" | tr -d ' ')
 warning_count=$(wc -l < "$WARNINGS" | tr -d ' ')

@@ -25,6 +25,42 @@ function Report-Warning {
     Write-Host "WARN  $Message" -ForegroundColor Yellow
 }
 
+function Report-Update {
+    param([string]$Message)
+    Write-Host "UPDATE $Message" -ForegroundColor Cyan
+}
+
+function Check-ContextRailUpdate {
+    if ($env:CONTEXTRAIL_NO_UPDATE_CHECK -eq "1") { return }
+
+    $VersionPath = Join-Path $Root ".contextrail-version"
+    if (-not (Test-Path -LiteralPath $VersionPath -PathType Leaf)) { return }
+
+    try {
+        $LocalVersion = (Get-Content -LiteralPath $VersionPath -Raw -Encoding UTF8).Trim()
+    } catch {
+        return
+    }
+    if ($LocalVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { return }
+
+    $VersionUrl = "https://raw.githubusercontent.com/muisik/contextrail-template/main/.contextrail-version"
+    try {
+        $Response = Invoke-WebRequest -Uri $VersionUrl -UseBasicParsing -TimeoutSec 3
+        $LatestVersion = ([string]$Response.Content).Trim()
+    } catch {
+        return
+    }
+    if ($LatestVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { return }
+
+    try {
+        if (([version]$LatestVersion) -gt ([version]$LocalVersion)) {
+            Report-Update "ContextRail $LatestVersion is available (installed: $LocalVersion). No files were changed."
+        }
+    } catch {
+        return
+    }
+}
+
 function Get-Field {
     param($Record, [string]$Name)
     if ($Record.Fields.ContainsKey($Name)) { return [string]$Record.Fields[$Name] }
@@ -252,6 +288,8 @@ foreach ($File in Get-ChildItem -LiteralPath $Root -Recurse -File -Force) {
         }
     }
 }
+
+Check-ContextRailUpdate
 
 Write-Host ""
 Write-Host "Summary: $($script:ErrorCount) error(s), $($script:WarningCount) warning(s)"

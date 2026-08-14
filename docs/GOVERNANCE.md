@@ -94,6 +94,16 @@ The implementing agent is also the first reviewer and QA layer. It must inspect 
 
 Unrelated findings must be reported but should not silently expand the current task. Immediate scope expansion is reserved for security, data loss, verification blockers, or findings that invalidate the current result.
 
+## Governed delegation
+
+The primary agent retains end-to-end ownership of the selected task. It may use native workers or subagents for bounded, low-risk, objectively verifiable execution work when delegation reduces unnecessary primary-agent reasoning or context cost.
+
+Delegation does not transfer durable project judgment. Ambiguous requirements, architecture and domain-boundary decisions, security and permission boundaries, destructive or data-risk operations, public-contract changes, final integration, independent review, and completion decisions remain with the primary agent.
+
+Workers receive explicit scope, acceptance criteria, verification evidence, and stop conditions. Their output is reviewed as untrusted implementation input before it becomes completion evidence or canonical project memory. ContextRail does not prescribe provider or model names and does not authorize metered external usage; paid APIs or credits require explicit user authorization.
+
+When no suitable native worker exists, a primary agent may offer a concise copy-paste delegation brief only when the expected savings are material enough to justify the handoff.
+
 ## Atomic completion
 
 Complete implementation, native tests, code-trace maintenance, Board removal, Notes update, History evidence, System updates, public docs, self-review, and canonical verification as one lifecycle change.

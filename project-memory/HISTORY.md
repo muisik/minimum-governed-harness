@@ -38,3 +38,10 @@ Allowed statuses: `completed`, `cancelled`.
 - Related: DEC-0004
 - Evidence: The first release attempt stopped before tag creation when fresh-clone equality detected the stale mirror version; pull-request Actions run 28545034563 then passed Linux, macOS, Windows, and the published-template version guard after workflow hardening.
 - Outcome: The release workflow now explicitly copies and stages `.contextrail-version`, checks worktree and staged values against the requested release, and retains fresh-clone plus archive round-trip gates.
+
+## TASK-0005 — Add governed agent delegation policy
+- Status: completed
+- Completed: 2026-08-14
+- Related: DEC-0007
+- Evidence: Main distribution validation run 31808775511 passed; release workflow run 31808775525 synchronized and round-trip verified the published template and created GitHub Release `v1.1.0` with ZIP, SHA-256 checksum, and per-file manifest; the published mirror declares `.contextrail-version` `1.1.0`.
+- Outcome: Added provider-independent governed delegation to the canonical agent contract, allowing bounded verifiable worker use while keeping durable judgment, canonical-memory integration, review, completion authority, and paid-usage control with the primary agent.

@@ -2,6 +2,13 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.2.0
+
+- Added best-effort update awareness to the OS-native validators.
+- Validators compare the local `.contextrail-version` with the published template version when network access is readily available and print a non-blocking `UPDATE` notice when a newer stable release exists.
+- Update checks never affect validation errors, warnings, `--strict` results, or offline operation; malformed or unavailable remote responses are ignored.
+- Added `CONTEXTRAIL_NO_UPDATE_CHECK=1` as an opt-out for environments that do not want the remote version check.
+
 ## 1.1.0
 
 - Added governed delegation guidance to the canonical agent contract.

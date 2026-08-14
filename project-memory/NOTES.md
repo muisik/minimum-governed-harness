@@ -86,6 +86,30 @@ The first `v1.0.0` release attempt correctly synchronized the visible template p
 
 The release workflow now explicitly installs and stages the version file, verifies both worktree and staged values, and confirms the fresh clone declares the requested release version. Pull-request Actions run `28545034563` passed Linux, macOS, Windows, and the published-template version guard.
 
+## TASK-0005 — Add governed agent delegation policy
+- Status: active
+- Related: DEC-0007
+- Last updated: 2026-08-14
+
+### Context
+
+Modern coding environments may expose native subagents, worker agents, or multiple capability tiers. ContextRail should let a strong primary agent offload bounded mechanical or read-heavy work without making the user coordinate routine delegation, without allowing cheaper workers to make durable project decisions, and without turning ContextRail into a model router or multi-agent runtime.
+
+### Requirements
+
+- Keep the primary agent responsible for ambiguous requirements, architecture and domain decisions, security boundaries, destructive or data-risk operations, integration, independent review, and completion.
+- Permit delegation only for bounded, low-blast-radius, objectively verifiable work with explicit scope, acceptance criteria, verification evidence, and stop conditions.
+- Prefer zero or one focused worker for normal work and prevent overlapping writers unless the environment provides safe isolation.
+- Keep lifecycle records and canonical project-memory integration under primary-agent ownership unless explicitly delegated.
+- Treat worker output as untrusted until the primary agent inspects and verifies the actual result.
+- Remain provider- and model-independent.
+- Never authorize metered pay-as-you-go models, purchased credits, or external paid APIs without explicit user authorization.
+- When no suitable native worker exists, allow a concise copy-paste delegation brief only when the expected savings are material.
+
+### Release target
+
+Publish the policy as ContextRail `1.1.0` from canonical `template/`, synchronize the clean template mirror through the existing release workflow, and record completion only after distribution validation and release round-trip checks pass.
+
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted
 - Related: TASK-0000
@@ -145,3 +169,13 @@ Treat external handoff packages as non-canonical staging inputs. Before implemen
 ### Decision
 
 Use a minimal language-native comment containing a local `TASK-####` pointer and short current invariant. The pointer identifies the task that best explains the present behavior, not every task that historically touched the code.
+
+## DEC-0007 — Delegate bounded work without transferring ownership
+- Status: accepted
+- Related: TASK-0005
+- Last updated: 2026-08-14
+- Reflected in: project-memory/SYSTEM.md — Purpose and Scope, Components, Primary Flows, Boundaries and Sources of Truth, Invariants, and Known Limits
+
+### Decision
+
+Allow the primary coding agent to use native workers for bounded, low-risk, objectively verifiable work while retaining durable project judgment, canonical-memory integration, independent review, completion authority, and control over any paid external usage. ContextRail specifies the boundary but does not choose providers, models, or implement a multi-agent runtime.

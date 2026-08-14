@@ -2,6 +2,14 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.1.0
+
+- Added governed delegation guidance to the canonical agent contract.
+- Allowed primary agents to delegate bounded, low-risk, objectively verifiable work to native workers while retaining architecture, domain, security, integration, review, and completion ownership.
+- Required delegated workers to receive explicit scope, acceptance criteria, verification evidence, and stop conditions, with worker output treated as untrusted until primary-agent review.
+- Kept ContextRail provider- and model-independent and prohibited implicit metered pay-as-you-go delegation or purchased external usage without explicit user authorization.
+- Added an optional copy-paste delegation brief for material savings when no suitable native worker exists, without turning ContextRail into a multi-agent runtime or model router.
+
 ## 1.0.0
 
 - Added a generic `handoffs/HANDOFF.md` adoption contract with `incoming/` and `processed/` staging directories.
@@ -47,4 +55,4 @@ All notable changes to ContextRail are documented here.
 ## 0.1.0
 
 - Added the initial `BOARD.md`, `NOTES.md`, and `HISTORY.md` lifecycle model.
-- Added the canonical `AGENTS.md` operating guide.
+- Added the canonical `AGENTS.md` operating guide, adapters, OS-native validators, fixture, and cross-platform CI.

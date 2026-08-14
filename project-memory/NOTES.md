@@ -87,7 +87,7 @@ The first `v1.0.0` release attempt correctly synchronized the visible template p
 The release workflow now explicitly installs and stages the version file, verifies both worktree and staged values, and confirms the fresh clone declares the requested release version. Pull-request Actions run `28545034563` passed Linux, macOS, Windows, and the published-template version guard.
 
 ## TASK-0005 — Add governed agent delegation policy
-- Status: active
+- Status: completed
 - Related: DEC-0007
 - Last updated: 2026-08-14
 
@@ -106,9 +106,9 @@ Modern coding environments may expose native subagents, worker agents, or multip
 - Never authorize metered pay-as-you-go models, purchased credits, or external paid APIs without explicit user authorization.
 - When no suitable native worker exists, allow a concise copy-paste delegation brief only when the expected savings are material.
 
-### Release target
+### Result
 
-Publish the policy as ContextRail `1.1.0` from canonical `template/`, synchronize the clean template mirror through the existing release workflow, and record completion only after distribution validation and release round-trip checks pass.
+ContextRail `v1.1.0` was published from the canonical `template/` payload. Main distribution validation run `31808775511` passed, release workflow run `31808775525` synchronized and round-trip verified the clean template mirror, and the GitHub Release published the ZIP, archive checksum, and per-file checksum manifest. The mirror now declares `.contextrail-version` `1.1.0`.
 
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted

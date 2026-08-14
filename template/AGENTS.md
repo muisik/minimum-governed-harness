@@ -73,6 +73,30 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Do not claim completion without evidence.
 - Do not assume another reviewer will catch mistakes.
 
+## Governed delegation
+
+The primary agent owns the selected task end-to-end. Delegation is an execution optimization, not a transfer of responsibility or project ownership.
+
+Silently consider delegation only for bounded, low-blast-radius, objectively verifiable work that does not require unresolved architecture, domain, product, security, or destructive-operation judgment. Good candidates include read-only exploration, file or symbol discovery, targeted documentation lookup, log or test-output summarization, established test execution, repetitive edits under an accepted pattern, boilerplate with explicit interfaces, and narrowly scoped regression tests after intended behavior is already decided.
+
+Keep ambiguous requirements, architecture and domain-boundary decisions, root-cause ownership, authentication and authorization, secrets and permissions, destructive operations, migrations with material data risk, public-contract or durable-invariant changes, final integration, independent review, and completion decisions with the primary agent.
+
+When a native worker or subagent is available:
+
+1. Delegate without asking the user to coordinate routine work when delegation is clearly beneficial.
+2. If the environment exposes capability or cost tiers, prefer a lower-cost or lower-capability worker only for work that satisfies the bounded criteria above.
+3. Give the worker the exact task, relevant ContextRail records, allowed scope, acceptance criteria, verification command or observable evidence, and explicit stop conditions.
+4. Prefer zero or one focused worker for normal work. Use parallel workers only for genuinely independent scopes, and do not allow overlapping writers unless the environment provides safe isolation.
+5. Require the worker to stop and return control when requirements conflict, context is missing, verification exposes a new behavior class, or the assignment would require scope expansion or prohibited judgment.
+
+Unless explicitly delegated, workers must not create or close lifecycle records, create durable decisions or requirements, rewrite `SYSTEM.md`, or mark work complete in `HISTORY.md`. The primary agent integrates delegated findings into canonical project memory.
+
+Treat worker output as untrusted implementation input until the primary agent inspects the actual diff or artifacts, verifies the stated evidence, and performs the independent review required by this guide. A worker's confidence statement or passing-test claim is not completion evidence by itself.
+
+If no suitable native worker exists and a bounded subtask could materially reduce expensive primary-agent work, the primary agent may offer one concise, copy-paste-ready delegation brief for another agent or model. Do not interrupt the user's workflow for trivial savings. The brief must include the exact subtask, ContextRail context to read, allowed scope, decisions the worker must not make, required outcome, verification evidence, and stop conditions.
+
+Do not hard-code provider or model names into ContextRail policy. Never start metered pay-as-you-go usage, purchase credits, or invoke an external paid model or API merely to enable delegation without explicit user authorization. If delegation would duplicate substantial context, reasoning, or review cost, keep the work with the primary agent.
+
 ## External handoff adoption
 
 When a specification, assessment, plan, export, or other work package is placed under `handoffs/incoming/`, follow `handoffs/HANDOFF.md` before implementing it.

@@ -2,6 +2,12 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.2.1
+
+- Simplified version awareness to three outcomes: silent when current, `UPDATE` when the local version differs from the published stable version, and `NOTICE` when the check cannot be completed.
+- Added a user-owned instruction block to `AGENTS.md` that must be preserved verbatim across explicitly requested ContextRail updates.
+- Added a canonical instruction to inform the user about version-check findings and never update automatically or overwrite `AGENTS.md` blindly.
+
 ## 1.2.0
 
 - Added best-effort update awareness to the OS-native validators.

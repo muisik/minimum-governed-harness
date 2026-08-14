@@ -25,39 +25,49 @@ function Report-Warning {
     Write-Host "WARN  $Message" -ForegroundColor Yellow
 }
 
+function Report-Notice {
+    param([string]$Message)
+    Write-Host "NOTICE $Message" -ForegroundColor DarkYellow
+}
+
 function Report-Update {
     param([string]$Message)
     Write-Host "UPDATE $Message" -ForegroundColor Cyan
 }
 
 function Check-ContextRailUpdate {
-    if ($env:CONTEXTRAIL_NO_UPDATE_CHECK -eq "1") { return }
-
     $VersionPath = Join-Path $Root ".contextrail-version"
-    if (-not (Test-Path -LiteralPath $VersionPath -PathType Leaf)) { return }
+    if (-not (Test-Path -LiteralPath $VersionPath -PathType Leaf)) {
+        Report-Notice "ContextRail version check could not be completed."
+        return
+    }
 
     try {
         $LocalVersion = (Get-Content -LiteralPath $VersionPath -Raw -Encoding UTF8).Trim()
     } catch {
+        Report-Notice "ContextRail version check could not be completed."
         return
     }
-    if ($LocalVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { return }
+    if ($LocalVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
+        Report-Notice "ContextRail version check could not be completed."
+        return
+    }
 
     $VersionUrl = "https://raw.githubusercontent.com/muisik/contextrail-template/main/.contextrail-version"
     try {
         $Response = Invoke-WebRequest -Uri $VersionUrl -UseBasicParsing -TimeoutSec 3
         $LatestVersion = ([string]$Response.Content).Trim()
     } catch {
+        Report-Notice "ContextRail version check could not be completed."
         return
     }
-    if ($LatestVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') { return }
-
-    try {
-        if (([version]$LatestVersion) -gt ([version]$LocalVersion)) {
-            Report-Update "ContextRail $LatestVersion is available (installed: $LocalVersion). No files were changed."
-        }
-    } catch {
+    if ($LatestVersion -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$') {
+        Report-Notice "ContextRail version check could not be completed."
         return
+    }
+
+    if ($LatestVersion -ne $LocalVersion) {
+        Report-Update "ContextRail is not current (installed: $LocalVersion, latest: $LatestVersion). Please update."
     }
 }
 

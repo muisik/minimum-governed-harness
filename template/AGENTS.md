@@ -8,6 +8,16 @@ This file is the canonical operating guide for coding agents.
 
 Tool-specific entry files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules must only direct the tool here. Do not duplicate or override operating rules across adapters.
 
+If validation reports that ContextRail is not current or that the version check could not be completed, inform the user; never update automatically or overwrite `AGENTS.md` blindly during an explicitly requested update.
+
+## User-maintained instructions
+
+Everything between these markers is user-owned and must be preserved verbatim across ContextRail updates.
+
+<!-- CONTEXTRAIL:USER-INSTRUCTIONS:START -->
+
+<!-- CONTEXTRAIL:USER-INSTRUCTIONS:END -->
+
 ## Source roles
 
 - `project-memory/SYSTEM.md` — canonical current system model.

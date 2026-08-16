@@ -45,3 +45,10 @@ Allowed statuses: `completed`, `cancelled`.
 - Related: DEC-0007
 - Evidence: Main distribution validation run 31808775511 passed; release workflow run 31808775525 synchronized and round-trip verified the published template and created GitHub Release `v1.1.0` with ZIP, SHA-256 checksum, and per-file manifest; the published mirror declares `.contextrail-version` `1.1.0`.
 - Outcome: Added provider-independent governed delegation to the canonical agent contract, allowing bounded verifiable worker use while keeping durable judgment, canonical-memory integration, review, completion authority, and paid-usage control with the primary agent.
+
+## TASK-0006 — Add reuse-first engineering policy
+- Status: completed
+- Completed: 2026-08-16
+- Related: DEC-0008
+- Evidence: The ContextRail 1.3.0 change set updates the canonical template policy, governance documentation, changelog, and current system/decision records while leaving validator schemas and lifecycle formats unchanged; repository CI and release verification provide the publication gate.
+- Outcome: Added proportional research-before-building guidance, license-aware reuse boundaries, independent implementation rules for incompatible source code, replaceable adapter boundaries, minimal-fork guidance, and the requirement that substantial custom infrastructure be justified instead of assumed.

@@ -104,6 +104,18 @@ Workers receive explicit scope, acceptance criteria, verification evidence, and 
 
 When no suitable native worker exists, a primary agent may offer a concise copy-paste delegation brief only when the expected savings are material enough to justify the handoff.
 
+## Research before building
+
+For non-trivial work, a custom implementation is not the default starting point. When a substantial capability is likely to have a proven existing solution, the agent performs a proportional ecosystem check before committing to bespoke implementation.
+
+Prefer compatible standard or platform capabilities, official interfaces, maintained open-source components, and proven existing systems when they materially satisfy the requirement. Adoption considers fit, maintenance, security, license compatibility, portability, operating constraints, and replacement cost rather than convenience alone.
+
+Code or components are incorporated only when their license and terms are compatible with the project's intended use and distribution. Incompatible implementations may still inform documented behavior, interfaces, architecture, failure modes, and tradeoffs, but the required behavior is implemented independently rather than copied or closely translated.
+
+Third-party capability should remain behind a small project-owned boundary when replacement is plausible. Upstream use is preferred over unnecessary forks; justified forks or vendored patches keep a minimal, documented project-specific delta.
+
+Custom infrastructure therefore requires justification. ContextRail favors owning the project-specific gap instead of rebuilding established commodity capability, while keeping research proportional so small or settled tasks do not become broad ecosystem surveys.
+
 ## Atomic completion
 
 Complete implementation, native tests, code-trace maintenance, Board removal, Notes update, History evidence, System updates, public docs, self-review, and canonical verification as one lifecycle change.

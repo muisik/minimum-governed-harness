@@ -110,6 +110,30 @@ Modern coding environments may expose native subagents, worker agents, or multip
 
 ContextRail `v1.1.0` was published from the canonical `template/` payload. Main distribution validation run `31808775511` passed, release workflow run `31808775525` synchronized and round-trip verified the clean template mirror, and the GitHub Release published the ZIP, archive checksum, and per-file checksum manifest. The mirror now declares `.contextrail-version` `1.1.0`.
 
+## TASK-0006 — Add reuse-first engineering policy
+- Status: completed
+- Related: DEC-0008
+- Last updated: 2026-08-16
+
+### Context
+
+For non-trivial engineering work, starting from a custom implementation can waste time and create avoidable maintenance when a proven standard capability, official interface, maintained open-source component, or compatible existing system already solves the commodity part of the problem. Reuse must still preserve project independence, license compatibility, security boundaries, and a practical replacement path.
+
+### Requirements
+
+- Require proportional ecosystem research before substantial custom implementation when a proven existing solution is reasonably likely.
+- Prefer standards, official APIs/SDKs/protocols, maintained open-source components, and compatible existing systems when they materially satisfy the requirement.
+- Evaluate functional fit, maintenance, security, license compatibility, portability, operational constraints, and replacement cost before adoption.
+- Incorporate external implementation code only when its license and terms are compatible with the project's intended use and distribution.
+- Allow incompatible sources to inform documented behavior, interfaces, architecture, failure modes, and tradeoffs while requiring independent implementation rather than copying, close translation, or line-by-line ports.
+- Keep replaceable third-party capability behind small project-owned boundaries when practical.
+- Prefer upstream use over unnecessary forks and keep justified fork or vendored deltas small and documented.
+- Keep research proportional; small or settled work must not expand into broad ecosystem surveys.
+
+### Result
+
+ContextRail `v1.3.0` adds a general reuse-first engineering section to the canonical agent contract and documents the same governance boundary without naming any project, product, provider, runtime, or application-specific implementation. Validator schemas and lifecycle formats are unchanged.
+
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted
 - Related: TASK-0000
@@ -179,3 +203,13 @@ Use a minimal language-native comment containing a local `TASK-####` pointer and
 ### Decision
 
 Allow the primary coding agent to use native workers for bounded, low-risk, objectively verifiable work while retaining durable project judgment, canonical-memory integration, independent review, completion authority, and control over any paid external usage. ContextRail specifies the boundary but does not choose providers, models, or implement a multi-agent runtime.
+
+## DEC-0008 — Prefer proven integration before custom implementation
+- Status: accepted
+- Related: TASK-0006
+- Last updated: 2026-08-16
+- Reflected in: project-memory/SYSTEM.md — Purpose and Scope, Primary Flows, Invariants, and Known Limits
+
+### Decision
+
+For non-trivial capabilities likely to have proven existing solutions, require proportional research before bespoke implementation. Prefer compatible reuse or integration, incorporate code only under compatible terms, use incompatible sources only as engineering knowledge for an independent implementation, keep replaceable dependencies behind small project-owned boundaries, and treat substantial custom infrastructure as a decision that requires justification rather than the default starting point.

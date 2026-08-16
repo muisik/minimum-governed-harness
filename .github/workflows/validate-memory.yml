@@ -18,6 +18,14 @@ jobs:
         run: sh template/scripts/validate-linux.sh --root . --strict
       - name: Validate task-linked trace fixture
         run: sh template/scripts/validate-linux.sh --root tests/fixtures/valid-trace --strict
+      - name: Check current shared-work coordination
+        run: sh template/scripts/check-coordination.sh --root .
+      - name: Confirm coordination advisories
+        run: |
+          output="$(GITHUB_ACTOR=carol GITHUB_HEAD_REF=feature/task-0100-payment-retry sh template/scripts/check-coordination.sh --root tests/fixtures/team-coordination 2>&1)"
+          printf '%s\n' "$output"
+          printf '%s\n' "$output" | grep -F "TASK-0100 scope 'src/payments' overlaps active TASK-0101 scope 'src/payments/retry'"
+          printf '%s\n' "$output" | grep -F "TASK-0100 branch 'feature/task-0100-payment-retry' is owned by @alice but GitHub actor is @carol"
       - name: Confirm invalid fixture failures
         run: |
           set +e
@@ -43,6 +51,14 @@ jobs:
         run: sh template/scripts/validate-macos.sh --root . --strict
       - name: Validate task-linked trace fixture
         run: sh template/scripts/validate-macos.sh --root tests/fixtures/valid-trace --strict
+      - name: Check current shared-work coordination
+        run: sh template/scripts/check-coordination.sh --root .
+      - name: Confirm coordination advisories
+        run: |
+          output="$(GITHUB_ACTOR=carol GITHUB_HEAD_REF=feature/task-0100-payment-retry sh template/scripts/check-coordination.sh --root tests/fixtures/team-coordination 2>&1)"
+          printf '%s\n' "$output"
+          printf '%s\n' "$output" | grep -F "TASK-0100 scope 'src/payments' overlaps active TASK-0101 scope 'src/payments/retry'"
+          printf '%s\n' "$output" | grep -F "TASK-0100 branch 'feature/task-0100-payment-retry' is owned by @alice but GitHub actor is @carol"
       - name: Confirm invalid fixture failures
         run: |
           set +e
@@ -71,6 +87,27 @@ jobs:
       - name: Validate task-linked trace fixture
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File template\scripts\validate-windows.ps1 -Root tests\fixtures\valid-trace -Strict
+      - name: Check current shared-work coordination
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File template\scripts\check-coordination.ps1 -Root .
+      - name: Confirm coordination advisories
+        shell: powershell
+        run: |
+          $env:GITHUB_ACTOR = "carol"
+          $env:GITHUB_HEAD_REF = "feature/task-0100-payment-retry"
+          $output = & powershell -NoProfile -ExecutionPolicy Bypass -File template\scripts\check-coordination.ps1 -Root tests\fixtures\team-coordination 2>&1
+          $text = $output | Out-String
+          Write-Host $text
+          $expected = @(
+            "TASK-0100 scope 'src/payments' overlaps active TASK-0101 scope 'src/payments/retry'",
+            "TASK-0100 branch 'feature/task-0100-payment-retry' is owned by @alice but GitHub actor is @carol"
+          )
+          foreach ($message in $expected) {
+            if (-not $text.Contains($message)) {
+              Write-Error "Expected coordination finding was not emitted: $message"
+              exit 1
+            }
+          }
       - name: Confirm invalid fixture failures
         shell: powershell
         run: |

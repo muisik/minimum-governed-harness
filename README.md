@@ -4,27 +4,28 @@
 
 **ContextRail** is a small, repo-local context and governance layer for coding agents.
 
-It gives an agent a bounded current system map, unfinished work queue, durable rationale, completion evidence, external-handoff intake, task-linked implementation trace, and operating rules for safe delegation, verification, and reuse — without replacing the agent's native planner or turning the repository into a project-management platform.
+It gives an agent a bounded current system map, unfinished work queue, durable rationale, completion evidence, external-handoff intake, task-linked implementation trace, and operating rules for safe delegation, verification, reuse, and shared-repository coordination — without replacing the agent's native planner or turning the repository into a project-management platform.
 
-Current stable release: **v1.3.0**.
+Current stable release: **v1.4.0**.
 
 ## At a glance
 
 ```text
-AGENTS.md                -> How the coding agent should work in this repository
+AGENTS.md                -> Canonical shared operating guide for this repository
+CLAUDE.md / GEMINI.md    -> Thin tool-specific entry points into AGENTS.md
 project-memory/SYSTEM.md -> What is true about the implemented system now?
-project-memory/BOARD.md  -> What unfinished work exists now?
+project-memory/BOARD.md  -> What unfinished work exists now, and who owns it?
 project-memory/NOTES.md  -> What does the work mean, and why are decisions being made?
 project-memory/HISTORY.md-> What was completed or cancelled, and what proves it?
 handoffs/                -> How external work packages enter the governed model
-scripts/                 -> OS-native ContextRail validation
+scripts/                 -> OS-native validation and shared-work coordination checks
 ```
 
 The core idea is simple: keep current truth, active work, rationale, and evidence separate enough that an agent can retrieve only what it needs, while preserving stable identities and explicit boundaries.
 
 ## What ContextRail adds
 
-ContextRail is intentionally small, but the operating contract now covers more than memory files:
+ContextRail is intentionally small, but the operating contract covers more than memory files:
 
 - **bounded context retrieval** instead of loading the whole project history;
 - **external handoff adoption** before implementation;
@@ -34,7 +35,9 @@ ContextRail is intentionally small, but the operating contract now covers more t
 - **controlled incidental findings** without silent scope expansion;
 - **governed delegation** to bounded workers while the primary agent retains judgment and completion ownership;
 - **reuse-first engineering** so substantial custom infrastructure is justified rather than assumed;
-- **non-blocking version awareness** and preservation of user-owned `AGENTS.md` instructions across explicit updates;
+- **lightweight shared-work coordination** using existing task ownership plus optional branch and path scope metadata;
+- **non-blocking version awareness** and preservation of repository-shared project instructions across explicit updates;
+- **thin tool adapters** so different contributors can use different coding agents without duplicating repository policy;
 - **one canonical project verification path**, with ContextRail validation joining native tests rather than replacing them.
 
 Normative detail lives in [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md). This README is the entry point, not a second operating contract.
@@ -74,7 +77,7 @@ See [`docs/ADOPTION.md`](docs/ADOPTION.md) for the installation and first-use fl
 
 ```text
 SYSTEM  -> implemented system truth
-BOARD   -> unfinished work
+BOARD   -> unfinished work and current responsibility
 NOTES   -> task detail, rationale, decisions, requirements, and risks
 HISTORY -> completed/cancelled work and evidence
 ```
@@ -92,6 +95,7 @@ Read AGENTS
   -> adopt any requested external handoff
   -> select one active or explicitly requested TASK
   -> retrieve only matching task detail and related records from NOTES
+  -> inspect active ownership / branch / scope when parallel work may exist
   -> inspect only relevant code, tests, logs, and configuration
   -> research proven existing solutions first when substantial custom work may be avoidable
   -> implement with the agent's native planner
@@ -188,7 +192,50 @@ Unrelated bugs, risks, smells, or surprising behavior are reported with evidence
 
 Immediate scope expansion is reserved for security vulnerabilities, data-loss risks, verification blockers, or findings that invalidate the current result.
 
-## Version awareness and user-owned instructions
+## Shared repository coordination
+
+ContextRail does not become a task tracker, file-locking service, or permission system when several people or coding agents share a repository. It adds only the coordination state that is useful next to implementation.
+
+`Owner` remains the required responsibility field. When a GitHub identity is known, prefer the repository-visible form:
+
+```markdown
+## TASK-0142 — Payment retry
+- Status: active
+- Priority: P1
+- Owner: @alice
+- Branch: feature/task-0142-payment-retry
+- Scope: src/payments, tests/payments
+- Related: none
+- Summary: Implement bounded payment retry behavior.
+- Acceptance: Retry behavior is covered by project-native verification.
+```
+
+`Branch` and `Scope` are optional. `Scope` is a comma-separated set of repository-relative path prefixes and is a visibility hint, not an exclusive lock.
+
+The advisory coordination checker can surface:
+
+- an active task whose owner remains `unassigned`;
+- a branch declaration without enough scope information to assess overlap;
+- equal or ancestor/descendant path scopes across active tasks;
+- a GitHub Actions branch whose simple `@username` owner differs from `GITHUB_ACTOR`.
+
+Run it directly when useful:
+
+### Linux / macOS
+
+```sh
+sh scripts/check-coordination.sh
+```
+
+### Windows
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\check-coordination.ps1
+```
+
+These are advisory signals. CODEOWNERS, branch protection or rulesets, repository permissions, required reviewers, CI, and Git merge behavior remain authoritative.
+
+## Version awareness and project-maintained instructions
 
 Every distributed project carries `.contextrail-version`.
 
@@ -202,7 +249,7 @@ Version awareness never changes validator errors, warnings, `--strict` results, 
 
 The validator only reports. It does **not** automatically download, merge, or apply ContextRail updates.
 
-`AGENTS.md` also contains a dedicated user-owned instruction block:
+`AGENTS.md` contains a dedicated repository-shared project instruction block:
 
 ```text
 <!-- CONTEXTRAIL:USER-INSTRUCTIONS:START -->
@@ -210,7 +257,9 @@ The validator only reports. It does **not** automatically download, merge, or ap
 <!-- CONTEXTRAIL:USER-INSTRUCTIONS:END -->
 ```
 
-Content between those markers is user-owned and must be preserved verbatim across explicitly requested ContextRail updates. Agents are instructed never to overwrite `AGENTS.md` blindly.
+The marker names are retained for update compatibility, but the content is **project-owned**, not one contributor's personal agent preferences. It is shared by all contributors and coding agents and must be preserved verbatim across explicitly requested ContextRail updates. Personal preferences belong in each contributor's local or tool-specific configuration outside the shared repository contract.
+
+ContextRail keeps tool-specific repository files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules as thin entry points into canonical `AGENTS.md`. Different contributors may therefore use different coding agents without maintaining conflicting copies of repository policy.
 
 ## Canonical verification integration
 
@@ -262,7 +311,7 @@ ContextRail validators check governance and trace integrity, including:
 - task-linked comments without a nearby non-empty invariant;
 - an oversized `SYSTEM.md` that may no longer be a bounded map.
 
-The validator does **not** prove semantic correctness, license compatibility, architecture quality, or test adequacy. Project-native tests remain authoritative for runtime behavior.
+The validator does **not** prove semantic correctness, license compatibility, architecture quality, test adequacy, task ownership, or conflict freedom. Project-native tests remain authoritative for runtime behavior; the separate coordination checker only exposes likely parallel-work collisions.
 
 ## Clean template contents
 
@@ -296,6 +345,8 @@ scripts/
   validate-linux.sh
   validate-macos.sh
   validate-windows.ps1
+  check-coordination.sh
+  check-coordination.ps1
 ```
 
 They deliberately exclude ContextRail's own README, license, changelog, contribution guide, documentation, test fixtures, and development history.
@@ -333,11 +384,15 @@ Normal CI adds another guard: if source and published repositories declare the s
 ## TASK-0001 — Add user authentication
 - Status: active
 - Priority: P1
-- Owner: unassigned
+- Owner: @github-user
+- Branch: feature/task-0001-auth
+- Scope: src/auth, tests/auth
 - Related: DEC-0001
 - Summary: Add session-based authentication.
 - Acceptance: Login, logout, and protected routes are behavior-tested.
 ```
+
+`Branch` and `Scope` are optional; the other fields shown above are the normal task contract.
 
 ### Notes record
 
@@ -376,19 +431,20 @@ Cancelled tasks use `Cancelled: YYYY-MM-DD` instead of `Completed`.
 
 ## What ContextRail is not
 
-ContextRail is not a project-management replacement, specification generator, planning compiler, semantic database, dependency manager, legal-license checker, multi-agent runtime, model router, or substitute for source code and native tests.
+ContextRail is not a project-management replacement, specification generator, planning compiler, semantic database, dependency manager, legal-license checker, multi-agent runtime, model router, file-locking system, or substitute for source code and native tests.
 
-It governs how agents retrieve project context and move work through a small set of repo-local boundaries while leaving execution to the coding environment and native toolchain.
+It governs how agents retrieve project context and move work through a small set of repo-local boundaries while leaving execution, access control, and merge authority to the coding environment, repository host, and native toolchain.
 
 ## Stability and evolution
 
 The **1.0 contract** established the stable structural core: four bounded memory roles, external handoff adoption, task-linked implementation trace, OS-native validation, canonical verification integration, and synchronized distribution.
 
-Subsequent 1.x releases have extended the operating policy without turning ContextRail into a runtime:
+Subsequent 1.x releases extend the operating policy without turning ContextRail into a runtime:
 
 - **1.1:** governed delegation;
-- **1.2 / 1.2.1:** non-blocking version awareness and preserved user-owned instructions;
-- **1.3:** reuse-first engineering and license-aware integration boundaries.
+- **1.2 / 1.2.1:** non-blocking version awareness and preserved project instructions;
+- **1.3:** reuse-first engineering and license-aware integration boundaries;
+- **1.4:** lightweight shared-repository coordination and explicit separation of repository-shared instructions from personal agent preferences.
 
 New mechanisms should continue to earn their place through repeated real-world need rather than expanding the harness by default.
 

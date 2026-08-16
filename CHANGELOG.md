@@ -2,6 +2,17 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.4.0
+
+- Added optional shared-repository coordination metadata using the existing required `Owner` field plus optional `Branch` and comma-separated path-prefix `Scope` fields.
+- Added OS-native advisory coordination checkers for Linux/macOS and Windows without changing the existing project-memory or code-trace validator semantics.
+- Detect active task scopes that overlap by equal or ancestor/descendant repository path prefixes.
+- On GitHub Actions, compare a matching task branch's simple `@username` owner with `GITHUB_ACTOR` and report mismatches as advisory findings rather than permission failures.
+- Keep CODEOWNERS, branch protection, repository permissions, required review, CI, and merge policy authoritative; ContextRail coordination metadata does not lock files or grant ownership.
+- Clarified that the protected instruction block in `AGENTS.md` is repository-shared project instruction rather than one contributor's personal agent preferences; retained the existing marker names for update compatibility.
+- Keep tool-specific repository entry files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules as thin adapters into canonical `AGENTS.md`, allowing mixed-agent teams without duplicated policy.
+- Added deterministic cross-platform fixtures that prove scope-overlap and GitHub actor-mismatch findings.
+
 ## 1.3.0
 
 - Added a reuse-first engineering policy for non-trivial work: perform proportional ecosystem research before committing to substantial custom implementation when proven solutions are likely to exist.

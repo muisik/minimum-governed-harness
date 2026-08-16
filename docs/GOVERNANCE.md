@@ -14,6 +14,23 @@ It contains a concise map of purpose, components, flows, boundaries, invariants,
 
 It contains only `TASK-####` records with `proposed`, `active`, or `blocked` status. Each task requires `Status`, `Priority`, `Owner`, `Related`, `Summary`, and `Acceptance`.
 
+For shared repositories, `Owner` remains the canonical responsibility field. Prefer `Owner: @github-login` when the responsible GitHub identity is known. `Branch` and `Scope` are optional coordination metadata: `Branch` names the task's working branch, while `Scope` is a comma-separated set of repository-relative file or directory prefixes that the task reasonably expects to change.
+
+## Shared repository coordination
+
+ContextRail makes parallel work visible; it does not reserve files or enforce permissions.
+
+The optional OS-native coordination checker reads active Board tasks and reports advisory findings when:
+
+- an active task remains `Owner: unassigned`;
+- a task declares a branch without enough scope information to assess likely overlap;
+- two active task scopes are equal or one declared path prefix contains the other at a repository path boundary;
+- on GitHub Actions, a task's recorded branch matches the current branch while a simple `@username` owner differs from `GITHUB_ACTOR`.
+
+Scope findings are intentionally coarse. They surface likely collisions early without attempting semantic code ownership, symbol analysis, locking, or merge prediction. Actor mismatches are also advisory because pair work, bots, delegated commits, and maintainers acting on another person's branch may be legitimate.
+
+Repository-native controls remain authoritative for access and merge governance: Git branches and worktrees isolate changes; CODEOWNERS expresses review ownership; branch protection or rulesets enforce required checks and reviewers; GitHub permissions determine repository access; and the normal merge process resolves actual conflicts. ContextRail must not duplicate those systems.
+
 ## Notes
 
 `project-memory/NOTES.md` answers: **What does this work mean, why does it exist, and what has been decided?**
@@ -54,16 +71,28 @@ Title normalization ignores case, repeated whitespace, and punctuation. It is a 
 ## Canonical ownership
 
 - current architecture and boundaries: System;
-- unfinished task state: Board;
+- unfinished task state and optional coordination metadata: Board;
 - task detail and rationale: Notes;
 - completion and cancellation evidence: History;
 - external intake procedure: `handoffs/HANDOFF.md`;
 - raw handoff packages: non-canonical source evidence under `handoffs/`;
 - runtime behavior: source code and native tests;
 - public promise: README and user-facing documentation;
-- agent workflow: AGENTS.
+- shared repository agent workflow and project instructions: `AGENTS.md`;
+- personal agent preferences: contributor-local or tool-local configuration outside the shared repository contract;
+- repository access, CODEOWNERS, branch protection, required review, and merge authority: repository-native hosting controls.
 
 A task may appear in Board and Notes because they serve different roles. A task must not appear in Board and History simultaneously.
+
+## Repository and personal agent instructions
+
+`AGENTS.md` is the canonical repository-shared operating contract. Its protected project-maintained instruction block belongs to the project and is read by every contributor and coding agent that adopts the repository contract; it is not a place for one contributor's personal preferences.
+
+The block continues to use the existing `CONTEXTRAIL:USER-INSTRUCTIONS` marker names for update compatibility, but its ownership semantics are project-level. ContextRail updates must preserve the block verbatim.
+
+Personal preferences such as response style, individual workflow habits, or tool-local defaults stay in each contributor's local or agent-specific configuration. They must not override the shared repository contract.
+
+Tool-specific repository files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules remain valid and useful in a mixed-agent team, but they stay thin entry points into `AGENTS.md`. They must not become competing copies of repository policy.
 
 ## Task-linked code trace
 
@@ -122,7 +151,7 @@ Complete implementation, native tests, code-trace maintenance, Board removal, No
 
 ## Adapter governance
 
-`AGENTS.md` is the only canonical agent instruction file in a user project. Tool-specific files remain thin pointers.
+`AGENTS.md` is the only canonical repository instruction file in a user project. Tool-specific files remain thin pointers so mixed-agent teams can keep the repository entry points their tools expect without duplicating policy.
 
 ## When to add another memory file
 

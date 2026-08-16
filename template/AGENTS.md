@@ -6,13 +6,13 @@ This repository uses ContextRail, a minimum governed harness for repo-local syst
 
 This file is the canonical operating guide for coding agents.
 
-Tool-specific entry files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules must only direct the tool here. Do not duplicate or override operating rules across adapters.
+Tool-specific entry files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules must remain thin repository entry points that direct the tool here. Do not duplicate or override operating rules across adapters.
 
 If validation reports that ContextRail is not current or that the version check could not be completed, inform the user; never update automatically or overwrite `AGENTS.md` blindly during an explicitly requested update.
 
-## User-maintained instructions
+## Project-maintained instructions
 
-Everything between these markers is user-owned and must be preserved verbatim across ContextRail updates.
+Everything between these markers is repository-owned project instruction shared by all contributors and coding agents. Personal agent preferences belong in each contributor's local or tool-specific configuration and must not be added here. This block must be preserved verbatim across ContextRail updates.
 
 <!-- CONTEXTRAIL:USER-INSTRUCTIONS:START -->
 

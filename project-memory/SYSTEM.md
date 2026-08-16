@@ -4,12 +4,12 @@ This file describes the current implemented ContextRail development and distribu
 
 ## Purpose and Scope
 
-ContextRail provides a minimal governed system map, project-memory layer, external-handoff intake contract, task-linked implementation trace, and agent delegation guardrails for coding-agent repositories. This repository develops, tests, documents, versions, and publishes the reusable template. It does not generate specifications, manage projects, perform semantic retrieval, operate a multi-agent runtime, or replace project-native verification.
+ContextRail provides a minimal governed system map, project-memory layer, external-handoff intake contract, task-linked implementation trace, governed delegation guardrails, and reuse-first engineering guidance for coding-agent repositories. This repository develops, tests, documents, versions, and publishes the reusable template. It does not generate specifications, manage projects, perform semantic retrieval, operate a multi-agent runtime, choose dependencies for a project, provide legal advice, or replace project-native verification.
 
 ## Components
 
 - `template/` — canonical source for every file distributed to user repositories.
-- `template/AGENTS.md` — canonical distributed operating contract, including governed delegation boundaries.
+- `template/AGENTS.md` — canonical distributed operating contract, including reuse-first engineering and governed delegation boundaries.
 - `template/handoffs/HANDOFF.md` — generic procedure for adopting external packages into local Board and Notes records.
 - `template/scripts/` — OS-native project-memory and code-trace validators.
 - `project-memory/` — ContextRail's own system model, active work, rationale, and completion evidence.
@@ -26,14 +26,16 @@ ContextRail provides a minimal governed system map, project-memory layer, extern
 1. Reusable changes are made under `template/`.
 2. External packages in a user repository are staged under `handoffs/incoming/`, deduplicated, and converted into local Notes records and independently verifiable Board tasks before implementation.
 3. Durable implementation boundaries and principal regression tests may carry a local `TASK-####` pointer and short invariant.
-4. The primary agent may delegate bounded, low-risk, objectively verifiable execution work to native workers while retaining judgment, integration, review, and completion ownership.
-5. Validators confirm memory lifecycle, identity, references, and task-linked code-pointer integrity on Linux, macOS, and Windows.
-6. Documentation, changelog, and `.contextrail-version` are updated with the behavior change.
-7. A `vX.Y.Z` tag pointing to `main` starts the release workflow.
-8. The workflow requires the tag, changelog heading, and `.contextrail-version` to agree.
-9. The workflow synchronizes `template/` to `isikmuhamm/contextrail-template` when needed and verifies a fresh clone against the source payload.
-10. A clean ZIP is built from `template/`, extracted, and compared back to the source before the GitHub Release is created.
-11. Users either create a new repository from the clean template or download the matching release archive.
+4. For non-trivial capabilities likely to have proven existing solutions, the primary agent performs proportional ecosystem research before committing to substantial custom implementation and prefers compatible reuse or integration when it materially satisfies the requirement.
+5. External code or components are incorporated only when their license and terms are compatible with the project's intended use; incompatible implementations may inform behavior, architecture, interfaces, failure modes, and tradeoffs but are not copied or closely translated.
+6. The primary agent may delegate bounded, low-risk, objectively verifiable execution work to native workers while retaining judgment, integration, review, and completion ownership.
+7. Validators confirm memory lifecycle, identity, references, and task-linked code-pointer integrity on Linux, macOS, and Windows.
+8. Documentation, changelog, and `.contextrail-version` are updated with the behavior change.
+9. A `vX.Y.Z` tag pointing to `main` starts the release workflow.
+10. The workflow requires the tag, changelog heading, and `.contextrail-version` to agree.
+11. The workflow synchronizes `template/` to `isikmuhamm/contextrail-template` when needed and verifies a fresh clone against the source payload.
+12. A clean ZIP is built from `template/`, extracted, and compared back to the source before the GitHub Release is created.
+13. Users either create a new repository from the clean template or download the matching release archive.
 
 ## Boundaries and Sources of Truth
 
@@ -42,7 +44,7 @@ ContextRail provides a minimal governed system map, project-memory layer, extern
 - Active ContextRail work — `project-memory/BOARD.md`.
 - Task detail and rationale — `project-memory/NOTES.md`.
 - Completed evidence — `project-memory/HISTORY.md`.
-- Agent workflow and delegation boundaries — `template/AGENTS.md`.
+- Agent workflow, reuse-first guidance, and delegation boundaries — `template/AGENTS.md`.
 - External-handoff intake procedure — `template/handoffs/HANDOFF.md`.
 - Raw external packages in user repositories — non-canonical source evidence under `handoffs/`.
 - Runtime behavior — source code and native tests.
@@ -59,6 +61,10 @@ ContextRail provides a minimal governed system map, project-memory layer, extern
 - Stable record identities do not reuse the same normalized title under different IDs.
 - Task-linked code markers resolve to a local Board or History lifecycle record and matching Notes detail.
 - Code comments point to the task that best explains the current invariant rather than accumulating full edit history.
+- Substantial custom infrastructure is a justified decision rather than the default starting point when proven compatible capability is readily available.
+- External adoption considers functional fit, maintenance, security, license compatibility, portability, operational constraints, and replacement cost.
+- Incompatible implementation code is not copied or closely translated into the project; only independently reusable engineering knowledge such as documented behavior, interfaces, architecture, failure modes, and tradeoffs informs a separate implementation.
+- Replaceable third-party capability should remain behind a small project-owned boundary when practical; unnecessary forks are avoided and justified deltas stay minimal and documented.
 - Delegation never transfers end-to-end task ownership, durable project judgment, final review, or completion authority away from the primary agent.
 - Delegated output is not completion evidence until the primary agent inspects and verifies the actual result.
 - ContextRail does not hard-code model providers or authorize metered paid delegation without explicit user approval.
@@ -81,6 +87,7 @@ ContextRail provides a minimal governed system map, project-memory layer, extern
 ## Known Limits
 
 - Existing user repositories do not receive template updates automatically.
+- ContextRail defines reuse-first decision guidance but does not perform dependency due diligence, guarantee license compatibility, or replace project-specific legal/security review.
 - ContextRail defines delegation policy but does not provide or orchestrate a multi-agent runtime; execution capabilities come from the active coding environment.
 - Validator implementations are intentionally OS-native and therefore require parity maintenance across shell and PowerShell.
 - Code-trace validation proves pointer integrity and nearby invariant text, not semantic correctness or test adequacy.
@@ -95,3 +102,4 @@ ContextRail provides a minimal governed system map, project-memory layer, extern
 - `DEC-0005` — external packages are non-canonical staging inputs adopted into local Board and Notes records.
 - `DEC-0006` — durable implementation boundaries use one governing task pointer and short current invariant.
 - `DEC-0007` — native delegation is allowed only for bounded verifiable work while the primary agent retains judgment, review, completion authority, and paid-usage control.
+- `DEC-0008` — non-trivial work uses reuse-first ecosystem research, license-aware incorporation, independent implementation for incompatible sources, and justified custom infrastructure.

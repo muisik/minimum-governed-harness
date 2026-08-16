@@ -156,6 +156,32 @@ The development-repository README was last materially updated on 2026-07-01 whil
 
 README now describes the current 1.3 operating contract, current repository identity, post-1.0 delegation/version/reuse policies, current validator boundaries, and synchronized distribution model while keeping normative detail in Governance and Adoption. Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency before lifecycle closure.
 
+## TASK-0008 — Add lightweight shared-work coordination
+- Status: active
+- Related: DEC-0009
+- Last updated: 2026-08-16
+
+### Context
+
+`Owner` is already a required Board field, but it currently carries no operational coordination semantics. In shared repositories, people and coding agents benefit from seeing who owns an active task, which branch carries it, and which repository paths it expects to touch before parallel work begins.
+
+### Requirements
+
+- Keep `Owner` required and backward-compatible; recommend `@github-user` when a GitHub identity is known without making GitHub availability a runtime dependency.
+- Add optional `Branch` and `Scope` task metadata. `Scope` is a comma-separated set of repository-relative path prefixes, not a file lock.
+- Provide OS-native coordination checks for Linux/macOS and Windows.
+- Warn once per pair when two active task scopes are equal or one scope is a path-prefix ancestor of the other.
+- When a GitHub Actions branch matches an active task's `Branch`, warn if a simple `@username` owner differs from `GITHUB_ACTOR`; do not hard-fail because pair work, bots, and delegated commits are valid.
+- Keep CODEOWNERS, branch protection, permissions, PR review, and merge policy authoritative. ContextRail exposes coordination state; it does not replace access control.
+- Keep the existing project-memory and task-linked code-trace validator contract unchanged.
+
+### Non-goals
+
+- No server-side task locking or claim service.
+- No GitHub API lookup to prove that an owner account exists.
+- No automatic assignment or task mutation from CI.
+- No requirement to annotate every changed code block with task metadata.
+
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted
 - Related: TASK-0000
@@ -235,3 +261,13 @@ Allow the primary coding agent to use native workers for bounded, low-risk, obje
 ### Decision
 
 For non-trivial capabilities likely to have proven existing solutions, require proportional research before bespoke implementation. Prefer compatible reuse or integration, incorporate code only under compatible terms, use incompatible sources only as engineering knowledge for an independent implementation, keep replaceable dependencies behind small project-owned boundaries, and treat substantial custom infrastructure as a decision that requires justification rather than the default starting point.
+
+## DEC-0009 — Keep team coordination advisory and repository-native
+- Status: accepted
+- Related: TASK-0008
+- Last updated: 2026-08-16
+- Reflected in: project-memory/SYSTEM.md — Components, Primary Flows, Invariants, and Known Limits
+
+### Decision
+
+Use existing Board ownership plus optional branch and path-scope metadata to make parallel work visible. Detect active scope overlap and GitHub branch-owner mismatch as advisory findings, while leaving permissions, ownership enforcement, review, locking, and merge authority to repository-native systems such as CODEOWNERS and branch protection.

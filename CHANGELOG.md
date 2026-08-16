@@ -2,6 +2,15 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.3.0
+
+- Added a reuse-first engineering policy for non-trivial work: perform proportional ecosystem research before committing to substantial custom implementation when proven solutions are likely to exist.
+- Prefer compatible standard/platform capabilities, official APIs/SDKs/protocols, maintained open-source components, and proven existing systems over rebuilding commodity infrastructure.
+- Require adoption checks for functional fit, maintenance, security, license compatibility, portability, operational constraints, and replacement cost.
+- Keep incompatible implementations as research inputs only: learn from documented behavior, interfaces, architecture, failure modes, and tradeoffs, then implement independently without copying or closely translating restricted code.
+- Prefer small project-owned adapters, upstream use over unnecessary forks, and minimal documented deltas when patching or vendoring is justified.
+- Added the principle: custom infrastructure requires justification; own only the project-specific gap when proven commodity capability already exists.
+
 ## 1.2.1
 
 - Simplified version awareness to three outcomes: silent when current, `UPDATE` when the local version differs from the published stable version, and `NOTICE` when the check cannot be completed.

@@ -157,7 +157,7 @@ The development-repository README was last materially updated on 2026-07-01 whil
 README now describes the current 1.3 operating contract, current repository identity, post-1.0 delegation/version/reuse policies, current validator boundaries, and synchronized distribution model while keeping normative detail in Governance and Adoption. Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency before lifecycle closure.
 
 ## TASK-0008 — Add lightweight shared-work coordination
-- Status: active
+- Status: completed
 - Related: DEC-0009
 - Last updated: 2026-08-16
 
@@ -181,6 +181,10 @@ README now describes the current 1.3 operating contract, current repository iden
 - No GitHub API lookup to prove that an owner account exists.
 - No automatic assignment or task mutation from CI.
 - No requirement to annotate every changed code block with task metadata.
+
+### Result
+
+The unreleased `feature/team-coordination` branch now adds optional `Branch` and path-prefix `Scope` metadata around the existing required `Owner`, cross-platform advisory coordination checkers, deterministic overlap and GitHub actor-mismatch fixtures, shared-repository agent guidance, and CI coverage. Distribution run `31958411843` passed Linux, macOS, Windows, and published-template consistency. The candidate remains branch-only; `main`, the published template, and the stable release remain unchanged.
 
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted

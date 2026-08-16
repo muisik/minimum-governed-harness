@@ -52,3 +52,10 @@ Allowed statuses: `completed`, `cancelled`.
 - Related: DEC-0008
 - Evidence: The ContextRail 1.3.0 change set updates the canonical template policy, governance documentation, changelog, and current system/decision records while leaving validator schemas and lifecycle formats unchanged; repository CI and release verification provide the publication gate.
 - Outcome: Added proportional research-before-building guidance, license-aware reuse boundaries, independent implementation rules for incompatible source code, replaceable adapter boundaries, minimal-fork guidance, and the requirement that substantial custom infrastructure be justified instead of assumed.
+
+## TASK-0007 — Refresh public README through ContextRail 1.3
+- Status: completed
+- Completed: 2026-08-16
+- Related: DEC-0007, DEC-0008
+- Evidence: Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency after the README refresh; the diff was reviewed against the current changelog, canonical agent contract, validators, governance/adoption docs, and project-memory truth.
+- Outcome: Replaced the stale 1.0-era public overview with a current 1.3 entry point covering governed delegation, version awareness and user-owned instruction preservation, reuse-first engineering, current validator/release boundaries, and current `muisik` repository links.

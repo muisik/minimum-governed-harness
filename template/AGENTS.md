@@ -83,6 +83,22 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Do not claim completion without evidence.
 - Do not assume another reviewer will catch mistakes.
 
+## Research before building
+
+For non-trivial work, do not assume custom implementation is the default. When a substantial capability is likely to have a proven existing solution, perform a proportional ecosystem check before designing or implementing it.
+
+Prefer, in order of fit, established standard-library or platform capabilities, official APIs/SDKs/protocols, maintained open-source components, and compatible existing systems or services over bespoke infrastructure when they materially satisfy the requirement.
+
+Before adopting or incorporating an external solution, evaluate functional fit, maintenance status, security implications, license compatibility, operational constraints, portability, and replacement cost. Prefer permissive or otherwise project-compatible licensing when code or components will become part of the project. If license obligations are unclear or conflict with the project's intended distribution model, do not incorporate that implementation until the constraint is resolved.
+
+When an external implementation cannot be incorporated because its license or other terms are incompatible, it may still be studied for publicly observable behavior, documented interfaces, architectural approaches, failure modes, and engineering tradeoffs. Derive requirements from those sources and implement the needed behavior independently; do not copy, closely translate, or line-by-line port incompatible implementation code.
+
+Keep third-party dependencies behind the smallest practical project-owned boundary or adapter when replacement is plausible. Prefer upstream use over unnecessary forks; when a fork or vendored patch is justified, keep the project-specific delta small, documented, and easy to compare with upstream.
+
+Treat custom infrastructure as a decision that requires justification, not as the default starting point. Own only the project-specific gap when proven commodity capability already exists.
+
+Research must remain proportional to the task. Do not turn small, obvious, or already-settled work into a broad ecosystem survey.
+
 ## Governed delegation
 
 The primary agent owns the selected task end-to-end. Delegation is an execution optimization, not a transfer of responsibility or project ownership.

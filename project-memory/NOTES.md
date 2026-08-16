@@ -135,7 +135,7 @@ For non-trivial engineering work, starting from a custom implementation can wast
 ContextRail `v1.3.0` adds a general reuse-first engineering section to the canonical agent contract and documents the same governance boundary without naming any project, product, provider, runtime, or application-specific implementation. Validator schemas and lifecycle formats are unchanged.
 
 ## TASK-0007 — Refresh public README through ContextRail 1.3
-- Status: active
+- Status: completed
 - Related: DEC-0007, DEC-0008
 - Last updated: 2026-08-16
 
@@ -151,6 +151,10 @@ The development-repository README was last materially updated on 2026-07-01 whil
 - Keep claims aligned with current code, validators, `AGENTS.md`, governance documentation, and release behavior.
 - Normalize visible repository links to the current `muisik` owner.
 - Keep the README concise enough to serve as an entry point; defer normative detail to `docs/GOVERNANCE.md` and `docs/ADOPTION.md`.
+
+### Result
+
+README now describes the current 1.3 operating contract, current repository identity, post-1.0 delegation/version/reuse policies, current validator boundaries, and synchronized distribution model while keeping normative detail in Governance and Adoption. Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency before lifecycle closure.
 
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted

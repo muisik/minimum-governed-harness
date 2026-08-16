@@ -1,10 +1,43 @@
 # ContextRail — Minimum Governed Harness
 
-[![Validate ContextRail distribution](https://github.com/isikmuhamm/minimum-governed-harness/actions/workflows/validate-memory.yml/badge.svg)](https://github.com/isikmuhamm/minimum-governed-harness/actions/workflows/validate-memory.yml)
+[![Validate ContextRail distribution](https://github.com/muisik/minimum-governed-harness/actions/workflows/validate-memory.yml/badge.svg)](https://github.com/muisik/minimum-governed-harness/actions/workflows/validate-memory.yml)
 
-**ContextRail** is a small, repo-local system map and governed project-memory layer for coding agents.
+**ContextRail** is a small, repo-local context and governance layer for coding agents.
 
-> Give an agent the right current truth, active work, task detail, external handoff context, and completed evidence without replacing its native planner or turning the repository into a planning platform.
+It gives an agent a bounded current system map, unfinished work queue, durable rationale, completion evidence, external-handoff intake, task-linked implementation trace, and operating rules for safe delegation, verification, and reuse — without replacing the agent's native planner or turning the repository into a project-management platform.
+
+Current stable release: **v1.3.0**.
+
+## At a glance
+
+```text
+AGENTS.md                -> How the coding agent should work in this repository
+project-memory/SYSTEM.md -> What is true about the implemented system now?
+project-memory/BOARD.md  -> What unfinished work exists now?
+project-memory/NOTES.md  -> What does the work mean, and why are decisions being made?
+project-memory/HISTORY.md-> What was completed or cancelled, and what proves it?
+handoffs/                -> How external work packages enter the governed model
+scripts/                 -> OS-native ContextRail validation
+```
+
+The core idea is simple: keep current truth, active work, rationale, and evidence separate enough that an agent can retrieve only what it needs, while preserving stable identities and explicit boundaries.
+
+## What ContextRail adds
+
+ContextRail is intentionally small, but the operating contract now covers more than memory files:
+
+- **bounded context retrieval** instead of loading the whole project history;
+- **external handoff adoption** before implementation;
+- **task-linked code trace** for durable behavior boundaries and principal regression tests;
+- **root-cause-before-patch** guidance for defects;
+- **independent review and evidence-backed completion**;
+- **controlled incidental findings** without silent scope expansion;
+- **governed delegation** to bounded workers while the primary agent retains judgment and completion ownership;
+- **reuse-first engineering** so substantial custom infrastructure is justified rather than assumed;
+- **non-blocking version awareness** and preservation of user-owned `AGENTS.md` instructions across explicit updates;
+- **one canonical project verification path**, with ContextRail validation joining native tests rather than replacing them.
+
+Normative detail lives in [`docs/GOVERNANCE.md`](docs/GOVERNANCE.md). This README is the entry point, not a second operating contract.
 
 ## Installation channels
 
@@ -12,13 +45,13 @@
 
 Create a new repository from the clean distribution mirror:
 
-**[`isikmuhamm/contextrail-template`](https://github.com/isikmuhamm/contextrail-template)**
+**[`muisik/contextrail-template`](https://github.com/muisik/contextrail-template)**
 
 The template contains only files intended to remain in the resulting project.
 
 ### Existing project or pinned version: GitHub Release
 
-Use the official Releases page in this repository and download:
+Use the official [Releases](https://github.com/muisik/minimum-governed-harness/releases) page and download:
 
 ```text
 contextrail-template-vX.Y.Z.zip
@@ -33,73 +66,207 @@ contextrail-template-vX.Y.Z.manifest.sha256
 
 The ZIP is built from the same canonical `template/` payload used to publish the Template Repository.
 
-This repository is the ContextRail development, documentation, and release source. It is not itself the clean user-project template.
+This repository is the ContextRail development, documentation, validation, and release source. It is **not** itself the clean user-project template.
 
-## Synchronization guarantee
+See [`docs/ADOPTION.md`](docs/ADOPTION.md) for the installation and first-use flow.
 
-Template creation and release downloads are parallel distribution channels, not independently maintained packages.
-
-```text
-minimum-governed-harness/template/
-        canonical payload
-              |
-              +--> contextrail-template repository
-              |
-              +--> contextrail-template-vX.Y.Z.zip
-```
-
-A versioned release is created only after the workflow verifies all of the following:
-
-1. the release tag is contained in `main`;
-2. `vX.Y.Z`, `template/.contextrail-version`, and the matching changelog heading agree;
-3. the published Template Repository matches `template/`, after synchronization when required;
-4. a fresh clone of the published repository matches `template/`;
-5. the generated ZIP is extracted and matches `template/`;
-6. the ZIP checksum and per-file checksum manifest are generated;
-7. the GitHub Release contains all expected assets.
-
-Normal pull-request CI adds another guard: when the source and published repositories declare the same `.contextrail-version`, any content difference fails validation. This prevents two different payloads from claiming the same version.
-
-## Core model
+## Core memory model
 
 ```text
-SYSTEM  -> What is true about the implemented system now?
-BOARD   -> What unfinished work exists now?
-NOTES   -> What does the work mean, and why are decisions being made?
-HISTORY -> What was completed or cancelled, and what proves it?
+SYSTEM  -> implemented system truth
+BOARD   -> unfinished work
+NOTES   -> task detail, rationale, decisions, requirements, and risks
+HISTORY -> completed/cancelled work and evidence
 ```
 
 `AGENTS.md` tells coding agents how to retrieve and maintain those four bounded sources.
 
-External work packages enter through `handoffs/`, are deduplicated and converted into local Board and Notes records, and remain non-canonical source evidence.
+External packages under `handoffs/` and task-linked code comments point into this model; they do not create another source of truth.
 
-## Retrieval and implementation flow
+## Typical agent flow
 
 ```text
 Read AGENTS
   -> read bounded SYSTEM map
+  -> inspect working tree
   -> adopt any requested external handoff
-  -> select one TASK from BOARD
-  -> retrieve exact TASK and related IDs from NOTES
+  -> select one active or explicitly requested TASK
+  -> retrieve only matching task detail and related records from NOTES
   -> inspect only relevant code, tests, logs, and configuration
+  -> research proven existing solutions first when substantial custom work may be avoidable
   -> implement with the agent's native planner
-  -> link durable code and principal tests back to the TASK
-  -> run canonical verification
-  -> record evidence in HISTORY
+  -> delegate only bounded, objectively verifiable work when useful
+  -> link durable behavior boundaries and principal tests back to the TASK
+  -> run the project's canonical verification
+  -> independently review the actual diff and evidence
+  -> record completion in HISTORY
   -> update SYSTEM if current truth changed
 ```
 
-`HISTORY.md` is searched by exact ID only when prior evidence is needed; it is not loaded by default.
+`HISTORY.md` is searched by exact task or related ID only when prior implementation evidence is needed; it is not loaded by default.
 
-## Why four memory files?
+## Operating contract
 
-A single long instruction file mixes architecture, open work, rationale, and old evidence. A file-per-feature model can create duplicate identities, orphan files, stale links, and a large navigation surface.
+### External handoff adoption
 
-ContextRail separates information by lifecycle and ownership while retaining stable IDs and exact retrieval. External handoffs and code comments point into that model rather than creating parallel sources of truth.
+Raw specifications, assessments, plans, exports, and other work packages are staged under `handoffs/incoming/`.
+
+Before implementation, the agent follows `handoffs/HANDOFF.md` to:
+
+1. search current local records and relevant code;
+2. detect overlap and conflicts;
+3. preserve external identifiers as provenance;
+4. convert durable requirements, decisions, risks, rationale, and acceptance criteria into local Notes;
+5. create short local tasks only for independently verifiable unfinished outcomes;
+6. validate the resulting local model.
+
+The raw package remains source evidence. Local Board and Notes records become the governed working context.
+
+### Task-linked code trace
+
+Durable behavior boundaries use a short language-native pointer:
+
+```text
+ContextRail: TASK-0042
+Invariant: Persistent mutation requires explicit authorization.
+```
+
+The task carries the full rationale and relationships. The code comment identifies the task that best explains the **current** behavior; it is not a full edit history.
+
+When the behavior is testable, the same task marker belongs on the principal regression test that proves the invariant.
+
+Generated files, vendor code, binaries, lock files, and formats that cannot safely carry comments are not modified for traceability; their implementation boundary stays in task Notes.
+
+### Root cause before patch
+
+For defects, agents identify the violated invariant, domain rule, state transition, parser contract, policy, or ownership boundary before adding an input-specific guard.
+
+Regression tests should cover the failure class rather than only the reported phrase or example.
+
+### Independent review
+
+The implementing agent is also the first review and QA layer.
+
+Before claiming completion it must inspect the actual diff or artifacts, verify each acceptance criterion against evidence, state what tests do and do not prove, check relevant failure paths and system invariants, and keep project memory aligned with runtime behavior.
+
+A worker's confidence statement or passing-test claim is not completion evidence by itself.
+
+### Governed delegation
+
+ContextRail allows native workers or subagents for **bounded, low-blast-radius, objectively verifiable** execution work when delegation is useful.
+
+The primary agent keeps responsibility for ambiguous requirements, architecture and domain boundaries, security and permissions, destructive or data-risk operations, public contracts, final integration, independent review, canonical-memory updates, and completion decisions.
+
+A delegated worker receives explicit scope, acceptance criteria, verification evidence, and stop conditions. Its output remains untrusted until the primary agent reviews the actual result.
+
+ContextRail does not hard-code model or provider names and does not authorize metered pay-as-you-go models, purchased credits, or external paid APIs merely to enable delegation without explicit user authorization.
+
+### Research before building
+
+For non-trivial work, **custom implementation is not the default** when a proven compatible solution is reasonably likely to exist.
+
+The agent should perform a proportional ecosystem check and prefer, when they materially satisfy the requirement:
+
+1. established standard-library or platform capabilities;
+2. official APIs, SDKs, and protocols;
+3. maintained open-source components;
+4. compatible existing systems or services.
+
+Before incorporating an external implementation, evaluate functional fit, maintenance, security, license compatibility, portability, operational constraints, and replacement cost.
+
+If an implementation cannot be incorporated because its license or terms are incompatible, it may still inform publicly documented behavior, interfaces, architecture, failure modes, and engineering tradeoffs. The required behavior must then be implemented independently rather than copied or closely translated.
+
+Keep replaceable third-party capability behind a small project-owned boundary where practical. Prefer upstream use over unnecessary forks; when a fork or vendored patch is justified, keep the project-specific delta small and documented.
+
+> Treat custom infrastructure as a decision that requires justification, not as the default starting point. Own only the project-specific gap when proven commodity capability already exists.
+
+Research remains proportional: small or settled work should not become an ecosystem survey.
+
+### Controlled incidental findings
+
+Unrelated bugs, risks, smells, or surprising behavior are reported with evidence but do not silently expand the current task.
+
+Immediate scope expansion is reserved for security vulnerabilities, data-loss risks, verification blockers, or findings that invalidate the current result.
+
+## Version awareness and user-owned instructions
+
+Every distributed project carries `.contextrail-version`.
+
+The OS-native validators perform a best-effort comparison against the published stable template when network access and a suitable fetch utility are available:
+
+- **current version:** silent;
+- **different version:** prints a non-blocking `UPDATE` message;
+- **version check unavailable or invalid:** prints a non-blocking `NOTICE`.
+
+Version awareness never changes validator errors, warnings, `--strict` results, or offline operation.
+
+The validator only reports. It does **not** automatically download, merge, or apply ContextRail updates.
+
+`AGENTS.md` also contains a dedicated user-owned instruction block:
+
+```text
+<!-- CONTEXTRAIL:USER-INSTRUCTIONS:START -->
+
+<!-- CONTEXTRAIL:USER-INSTRUCTIONS:END -->
+```
+
+Content between those markers is user-owned and must be preserved verbatim across explicitly requested ContextRail updates. Agents are instructed never to overwrite `AGENTS.md` blindly.
+
+## Canonical verification integration
+
+On first substantive use, the agent discovers the project's existing build, test, lint, static-analysis, smoke, and CI entrypoints.
+
+ContextRail validation is added to **one canonical project verification command** rather than creating a competing test system.
+
+The standalone template workflow is an initial safety net and can be removed when it duplicates an established project CI job.
+
+Direct validator commands:
+
+### Linux
+
+```sh
+sh scripts/validate-linux.sh --strict
+```
+
+### macOS
+
+```sh
+sh scripts/validate-macos.sh --strict
+```
+
+### Windows
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\validate-windows.ps1 -Strict
+```
+
+The validators use OS-provided tooling and require no Python, Node.js, Go, Rust, Java, .NET, or project-language runtime.
+
+## Validation scope
+
+ContextRail validators check governance and trace integrity, including:
+
+- required files and required `SYSTEM.md` sections;
+- lifecycle records incorrectly placed in System;
+- duplicate IDs;
+- normalized record titles reused under different identities;
+- inconsistent titles for the same stable identity;
+- invalid statuses;
+- required fields for Board, Notes, and History records;
+- missing completion/cancellation dates, evidence, or outcome;
+- Board/History overlap;
+- orphan task details;
+- broken `Related`, `Supersedes`, and `Replacement` references;
+- accepted decisions not reflected in current system truth;
+- task-linked code comments pointing to missing lifecycle or Notes records;
+- task-linked comments without a nearby non-empty invariant;
+- an oversized `SYSTEM.md` that may no longer be a bounded map.
+
+The validator does **not** prove semantic correctness, license compatibility, architecture quality, or test adequacy. Project-native tests remain authoritative for runtime behavior.
 
 ## Clean template contents
 
-The published template and release ZIP contain only files intended to remain in the user's project:
+The published template and release ZIP contain only files intended to remain in a user project:
 
 ```text
 AGENTS.md
@@ -131,65 +298,34 @@ scripts/
   validate-windows.ps1
 ```
 
-They deliberately exclude ContextRail's own README, license, changelog, contribution guide, documentation, fixtures, and development history.
+They deliberately exclude ContextRail's own README, license, changelog, contribution guide, documentation, test fixtures, and development history.
 
-## ContextRail 1.0 operating contract
+## Synchronized distribution guarantee
 
-### External handoff adoption
-
-Raw specifications, assessments, plans, and exports are placed under `handoffs/incoming/`. The agent follows `handoffs/HANDOFF.md`, searches before creating local identities, converts durable meaning into Notes, derives independently verifiable Board tasks, records conflicts, validates the result, and only then moves or removes the source package.
-
-### Task-linked code trace
-
-Durable behavior boundaries use a short native comment:
+Template creation and release downloads are parallel distribution channels derived from one canonical payload:
 
 ```text
-ContextRail: TASK-0042
-Invariant: Persistent mutation requires explicit authorization.
+minimum-governed-harness/template/
+        canonical payload
+              |
+              +--> muisik/contextrail-template
+              |
+              +--> contextrail-template-vX.Y.Z.zip
 ```
 
-The task carries the full rationale and relationships. The code comment identifies the task that best explains the current behavior; it does not list every historical edit. The same marker belongs on the principal regression test when the task establishes testable runtime behavior.
+A versioned release is created only after automation verifies that:
 
-### Root cause before patch
+1. the release commit is contained in `main`;
+2. `vX.Y.Z`, `template/.contextrail-version`, and the changelog heading agree;
+3. the published Template Repository matches the canonical payload after synchronization when required;
+4. a fresh clone of the published repository matches `template/`;
+5. the generated ZIP extracts back to the same payload;
+6. ZIP and per-file checksums are produced;
+7. all expected release assets are present.
 
-Agents identify the violated invariant, domain rule, state transition, parser contract, policy, or ownership boundary before adding an input-specific guard. Tests prove a behavior class, not only the reported sentence or example.
+Normal CI adds another guard: if source and published repositories declare the same ContextRail version, any payload difference fails the consistency job.
 
-### Independent review
-
-After implementation, the agent reviews its own diff as if no other reviewer will catch the mistake. Completion claims must be grounded in code, tests, logs, or observable output.
-
-### Controlled incidental findings
-
-Unrelated bugs and risks are reported with evidence but do not silently expand the current task. Only security, data-loss, verification-blocking, or result-invalidating findings justify an immediate scope change.
-
-### Canonical verification integration
-
-On first substantive use, the agent discovers the project's existing test, build, lint, static-analysis, smoke, and CI entrypoints. It integrates the matching ContextRail validator into one canonical verification command instead of creating a parallel test system.
-
-## Validation scope
-
-The OS-native validators require no Python, Node.js, Go, Rust, Java, .NET, or project runtime. They validate the ContextRail contract, including:
-
-- required files and `SYSTEM.md` sections;
-- lifecycle records incorrectly placed in System;
-- duplicate IDs;
-- exact normalized record titles reused under different identities;
-- inconsistent titles for the same stable identity;
-- invalid statuses;
-- required fields for Board, Notes, and History records;
-- missing completion or cancellation dates;
-- missing completion evidence or outcome;
-- Board/History overlap;
-- orphan task details;
-- broken `Related`, `Supersedes`, and `Replacement` references;
-- accepted decisions not reflected in current system truth;
-- task-linked code comments that point to missing lifecycle or Notes records;
-- task-linked comments without a nearby non-empty invariant;
-- an oversized System map that may no longer be bounded.
-
-The validator does **not** prove that an invariant is semantically correct or replace native project tests. It verifies that the trace points to governed local context and becomes one step inside the repository's canonical verification pipeline.
-
-## Required record fields
+## Required record shapes
 
 ### Board task
 
@@ -209,10 +345,10 @@ The validator does **not** prove that an invariant is semantically correct or re
 ## TASK-0001 — Add user authentication
 - Status: active
 - Related: DEC-0001
-- Last updated: 2026-07-01
+- Last updated: 2026-08-16
 ```
 
-Accepted decisions should also include:
+Accepted decisions should also identify where current truth is reflected:
 
 ```markdown
 - Reflected in: project-memory/SYSTEM.md — Authentication boundary
@@ -223,7 +359,7 @@ Accepted decisions should also include:
 ```markdown
 ## TASK-0001 — Add user authentication
 - Status: completed
-- Completed: 2026-07-01
+- Completed: 2026-08-16
 - Related: DEC-0001
 - Evidence: `pytest tests/auth -q`
 - Outcome: Login, logout, and protected routes implemented.
@@ -236,16 +372,25 @@ Cancelled tasks use `Cancelled: YYYY-MM-DD` instead of `Completed`.
 - [Governance contract](docs/GOVERNANCE.md)
 - [Adoption guide](docs/ADOPTION.md)
 - [Release history](CHANGELOG.md)
+- [Latest release](https://github.com/muisik/minimum-governed-harness/releases/latest)
 
 ## What ContextRail is not
 
-ContextRail is not a project-management replacement, specification generator, planning compiler, file-per-feature requirement, multi-agent runtime, semantic database, or substitute for source code and native tests.
+ContextRail is not a project-management replacement, specification generator, planning compiler, semantic database, dependency manager, legal-license checker, multi-agent runtime, model router, or substitute for source code and native tests.
 
-It is a minimal governed context layer that lets the coding agent keep using its own planner.
+It governs how agents retrieve project context and move work through a small set of repo-local boundaries while leaving execution to the coding environment and native toolchain.
 
-## Stability
+## Stability and evolution
 
-Version 1.0 freezes the minimal contract: four bounded memory roles, generic handoff adoption, task-linked code trace, OS-native validation, canonical verification integration, and synchronized distribution. New mechanisms should be added only after repeated use demonstrates a real boundary or failure mode.
+The **1.0 contract** established the stable structural core: four bounded memory roles, external handoff adoption, task-linked implementation trace, OS-native validation, canonical verification integration, and synchronized distribution.
+
+Subsequent 1.x releases have extended the operating policy without turning ContextRail into a runtime:
+
+- **1.1:** governed delegation;
+- **1.2 / 1.2.1:** non-blocking version awareness and preserved user-owned instructions;
+- **1.3:** reuse-first engineering and license-aware integration boundaries.
+
+New mechanisms should continue to earn their place through repeated real-world need rather than expanding the harness by default.
 
 ## License
 

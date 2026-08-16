@@ -64,5 +64,5 @@ Allowed statuses: `completed`, `cancelled`.
 - Status: completed
 - Completed: 2026-08-16
 - Related: DEC-0009
-- Evidence: Branch distribution runs `31958411843` and `31959699018` passed the cross-platform ContextRail validation path, deterministic scope-overlap and GitHub actor-mismatch assertions, and published-template consistency while the 1.4.0 candidate was refined.
-- Outcome: Added the 1.4.0 candidate with optional `Branch` and path-prefix `Scope` coordination metadata around the existing required `Owner`, advisory cross-platform coordination checks, GitHub actor hints, repository-native ownership boundaries, repository-shared project-instruction semantics, and thin mixed-agent entry adapters without changing the core validator semantics.
+- Evidence: Branch run `31959778062` and pull-request run `31959806202` passed Linux, macOS, Windows, deterministic scope-overlap and GitHub actor-mismatch assertions, invalid-fixture assertions, and published-template consistency; PR #14 was squash-merged to `main` as `b6048737df07be9e1e68be411a0e44b9868741ab`.
+- Outcome: Added ContextRail 1.4.0 shared-work coordination with optional `Branch` and path-prefix `Scope` around the required `Owner`, advisory cross-platform collision checks, GitHub actor hints, repository-native ownership boundaries, repository-shared project-instruction semantics, and thin mixed-agent entry adapters without changing the core validator semantics.

@@ -83,6 +83,34 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Do not claim completion without evidence.
 - Do not assume another reviewer will catch mistakes.
 
+## Shared repository coordination
+
+When multiple people or coding agents may work in the same repository, use existing Board task ownership as the coordination identity instead of creating a second assignment system.
+
+For an active task, keep `Owner` current. When the repository uses task branches, also record:
+
+```text
+- Owner: @github-user
+- Branch: feature/task-0142-short-name
+- Scope: src/payments, tests/payments
+```
+
+`Branch` and `Scope` are optional. `Scope` is a comma-separated set of repository-relative file or directory prefixes that the task reasonably expects to change; keep it narrow enough to be useful. These fields are visibility hints, not locks.
+
+Before substantial implementation in a shared repository:
+
+1. inspect other active Board tasks for overlapping ownership, branch, and scope;
+2. when available, run the matching advisory coordination checker:
+   - Linux/macOS: `sh scripts/check-coordination.sh`
+   - Windows: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\check-coordination.ps1`
+3. if another active task materially overlaps the intended scope, inspect or coordinate that work before editing; narrow the current scope when practical;
+4. do not silently take over another active task or treat ContextRail metadata as exclusive ownership;
+5. preserve repository-native controls as authoritative: CODEOWNERS, branch protection, permissions, required reviewers, CI, and merge policy decide what may enter the protected branch.
+
+On GitHub, prefer `Owner: @username` when the responsible account is known. When a task's recorded `Branch` matches the current GitHub Actions branch, the coordination checker may compare a simple `@username` owner with `GITHUB_ACTOR` and report a mismatch. Treat this as an advisory signal because pair work, bots, delegated commits, and maintainers acting on another person's branch are legitimate.
+
+ContextRail does not reserve files, prevent concurrent edits, query GitHub to prove that an account exists, or replace task trackers and repository permission systems. Its role is to make parallel work visible before it becomes an avoidable collision.
+
 ## Research before building
 
 For non-trivial work, do not assume custom implementation is the default. When a substantial capability is likely to have a proven existing solution, perform a proportional ecosystem check before designing or implementing it.
@@ -240,6 +268,8 @@ On the first substantive coding task, discover the existing native verification 
 The canonical verification command should run the relevant project tests, build, lint, static analysis, scenario or smoke checks, and ContextRail validation as appropriate. Do not create a second parallel test system when an established verification entrypoint already exists.
 
 The ContextRail validator checks project-memory governance and task-linked code-reference integrity only. It does not replace native project tests.
+
+The shared-work coordination checker is advisory and separate from canonical correctness validation. Run it before substantial parallel work when multiple active tasks may overlap; do not interpret a clean coordination check as proof that code changes are conflict-free.
 
 ## Creating work
 

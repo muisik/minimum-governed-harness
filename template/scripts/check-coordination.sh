@@ -26,7 +26,7 @@ fi
 
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/contextrail-coordination.XXXXXX")
 trap 'rm -rf "$TMP"' EXIT HUP INT TERM
-ACTIVE="$TMP/active.tsv"
+ACTIVE="$TMP/active.txt"
 WARNINGS="$TMP/warnings"
 : > "$WARNINGS"
 
@@ -41,7 +41,7 @@ function trim(value) {
 }
 function flush() {
   if (id != "" && status == "active")
-    printf "%s\t%s\t%s\t%s\n", id, owner, branch, scope
+    printf "%s|%s|%s|%s\n", id, owner, branch, scope
 }
 /^## TASK-[0-9][0-9][0-9][0-9][[:space:]]/ {
   flush()
@@ -64,7 +64,7 @@ id != "" && /^- Scope:[[:space:]]*/ {
 END { flush() }
 ' "$BOARD" > "$ACTIVE"
 
-while IFS="$(printf '\t')" read -r task owner branch scope; do
+while IFS='|' read -r task owner branch scope; do
   [ -n "$task" ] || continue
   if [ "$owner" = "unassigned" ]; then
     warn "$task is active but Owner is unassigned"
@@ -74,7 +74,7 @@ while IFS="$(printf '\t')" read -r task owner branch scope; do
   fi
 done < "$ACTIVE"
 
-awk -F '\t' '
+awk -F '|' '
 function trim(value) {
   gsub(/^[[:space:]]+|[[:space:]]+$/, "", value)
   return value
@@ -129,7 +129,7 @@ fi
 actor=${GITHUB_ACTOR:-}
 
 if [ -n "$current_branch" ] && [ -n "$actor" ]; then
-  awk -F '\t' -v current_branch="$current_branch" -v actor="$actor" '
+  awk -F '|' -v current_branch="$current_branch" -v actor="$actor" '
   $3 == current_branch && $2 ~ /^@[A-Za-z0-9][A-Za-z0-9-]*$/ {
     expected=substr($2,2)
     if (tolower(expected) != tolower(actor))

@@ -59,3 +59,10 @@ Allowed statuses: `completed`, `cancelled`.
 - Related: DEC-0007, DEC-0008
 - Evidence: Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency after the README refresh; the diff was reviewed against the current changelog, canonical agent contract, validators, governance/adoption docs, and project-memory truth.
 - Outcome: Replaced the stale 1.0-era public overview with a current 1.3 entry point covering governed delegation, version awareness and user-owned instruction preservation, reuse-first engineering, current validator/release boundaries, and current `muisik` repository links.
+
+## TASK-0008 — Add lightweight shared-work coordination
+- Status: completed
+- Completed: 2026-08-16
+- Related: DEC-0009
+- Evidence: Branch `feature/team-coordination` distribution run `31958411843` passed Linux, macOS, Windows, deterministic scope-overlap and GitHub actor-mismatch assertions, and published-template consistency; the branch remains unreleased and unmerged.
+- Outcome: Added an unreleased 1.4.0 candidate with optional `Branch` and path-prefix `Scope` coordination metadata around the existing required `Owner`, advisory cross-platform coordination checks, GitHub actor hints, and explicit repository-native ownership boundaries without changing the core validator semantics or `main`.

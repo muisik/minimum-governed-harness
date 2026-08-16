@@ -14,6 +14,23 @@ It contains a concise map of purpose, components, flows, boundaries, invariants,
 
 It contains only `TASK-####` records with `proposed`, `active`, or `blocked` status. Each task requires `Status`, `Priority`, `Owner`, `Related`, `Summary`, and `Acceptance`.
 
+For shared repositories, `Owner` remains the canonical responsibility field. Prefer `Owner: @github-login` when the responsible GitHub identity is known. `Branch` and `Scope` are optional coordination metadata: `Branch` names the task's working branch, while `Scope` is a comma-separated set of repository-relative file or directory prefixes that the task reasonably expects to change.
+
+## Shared repository coordination
+
+ContextRail makes parallel work visible; it does not reserve files or enforce permissions.
+
+The optional OS-native coordination checker reads active Board tasks and reports advisory findings when:
+
+- an active task remains `Owner: unassigned`;
+- a task declares a branch without enough scope information to assess likely overlap;
+- two active task scopes are equal or one declared path prefix contains the other at a repository path boundary;
+- on GitHub Actions, a task's recorded branch matches the current branch while a simple `@username` owner differs from `GITHUB_ACTOR`.
+
+Scope findings are intentionally coarse. They surface likely collisions early without attempting semantic code ownership, symbol analysis, locking, or merge prediction. Actor mismatches are also advisory because pair work, bots, delegated commits, and maintainers acting on another person's branch may be legitimate.
+
+Repository-native controls remain authoritative for access and merge governance: Git branches and worktrees isolate changes; CODEOWNERS expresses review ownership; branch protection or rulesets enforce required checks and reviewers; GitHub permissions determine repository access; and the normal merge process resolves actual conflicts. ContextRail must not duplicate those systems.
+
 ## Notes
 
 `project-memory/NOTES.md` answers: **What does this work mean, why does it exist, and what has been decided?**
@@ -54,14 +71,15 @@ Title normalization ignores case, repeated whitespace, and punctuation. It is a 
 ## Canonical ownership
 
 - current architecture and boundaries: System;
-- unfinished task state: Board;
+- unfinished task state and optional coordination metadata: Board;
 - task detail and rationale: Notes;
 - completion and cancellation evidence: History;
 - external intake procedure: `handoffs/HANDOFF.md`;
 - raw handoff packages: non-canonical source evidence under `handoffs/`;
 - runtime behavior: source code and native tests;
 - public promise: README and user-facing documentation;
-- agent workflow: AGENTS.
+- agent workflow: AGENTS;
+- repository access, CODEOWNERS, branch protection, required review, and merge authority: repository-native hosting controls.
 
 A task may appear in Board and Notes because they serve different roles. A task must not appear in Board and History simultaneously.
 

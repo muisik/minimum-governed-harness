@@ -78,10 +78,21 @@ Title normalization ignores case, repeated whitespace, and punctuation. It is a 
 - raw handoff packages: non-canonical source evidence under `handoffs/`;
 - runtime behavior: source code and native tests;
 - public promise: README and user-facing documentation;
-- agent workflow: AGENTS;
+- shared repository agent workflow and project instructions: `AGENTS.md`;
+- personal agent preferences: contributor-local or tool-local configuration outside the shared repository contract;
 - repository access, CODEOWNERS, branch protection, required review, and merge authority: repository-native hosting controls.
 
 A task may appear in Board and Notes because they serve different roles. A task must not appear in Board and History simultaneously.
+
+## Repository and personal agent instructions
+
+`AGENTS.md` is the canonical repository-shared operating contract. Its protected project-maintained instruction block belongs to the project and is read by every contributor and coding agent that adopts the repository contract; it is not a place for one contributor's personal preferences.
+
+The block continues to use the existing `CONTEXTRAIL:USER-INSTRUCTIONS` marker names for update compatibility, but its ownership semantics are project-level. ContextRail updates must preserve the block verbatim.
+
+Personal preferences such as response style, individual workflow habits, or tool-local defaults stay in each contributor's local or agent-specific configuration. They must not override the shared repository contract.
+
+Tool-specific repository files such as `CLAUDE.md`, `GEMINI.md`, Copilot instructions, and Cursor rules remain valid and useful in a mixed-agent team, but they stay thin entry points into `AGENTS.md`. They must not become competing copies of repository policy.
 
 ## Task-linked code trace
 
@@ -140,7 +151,7 @@ Complete implementation, native tests, code-trace maintenance, Board removal, No
 
 ## Adapter governance
 
-`AGENTS.md` is the only canonical agent instruction file in a user project. Tool-specific files remain thin pointers.
+`AGENTS.md` is the only canonical repository instruction file in a user project. Tool-specific files remain thin pointers so mixed-agent teams can keep the repository entry points their tools expect without duplicating policy.
 
 ## When to add another memory file
 

@@ -66,3 +66,21 @@ Allowed statuses: `completed`, `cancelled`.
 - Related: DEC-0009
 - Evidence: Branch run `31959778062` and pull-request run `31959806202` passed Linux, macOS, Windows, deterministic scope-overlap and GitHub actor-mismatch assertions, invalid-fixture assertions, and published-template consistency; PR #14 was squash-merged to `main` as `b6048737df07be9e1e68be411a0e44b9868741ab`.
 - Outcome: Added ContextRail 1.4.0 shared-work coordination with optional `Branch` and path-prefix `Scope` around the required `Owner`, advisory cross-platform collision checks, GitHub actor hints, repository-native ownership boundaries, repository-shared project-instruction semantics, and thin mixed-agent entry adapters without changing the core validator semantics.
+
+## TASK-0009 — Add task lifecycle completion compaction
+- Status: completed
+- Completed: 2026-08-18
+- Related: DEC-0010
+- Evidence: The 1.5.0 candidate updates the canonical agent lifecycle contract, template Notes/History guidance, Linux/macOS and Windows validator parity, a deterministic lifecycle-compaction fixture, CI assertions, governance documentation, changelog, and ContextRail's own memory. The source repository's previously long completed TASK-0001 through TASK-0008 Notes sections are compacted to short History-linked stubs so strict self-validation exercises the same rule distributed to user repositories.
+- Outcome: Closed-task evidence now has one canonical home in `HISTORY.md`; `NOTES.md` remains focused on open/planned task detail and durable `REQ`/`DEC`/`RISK` rationale. Validators warn when completed/cancelled Notes sections remain long or duplicate completion-detail sections already represented in History, and strict validation fails on those warnings.
+
+### Acceptance proof
+
+- The canonical `template/AGENTS.md` defines source-role lifecycle semantics, exact-ID Notes retrieval, completion compaction, durable record preservation, conditional System updates, and the unchanged four-file model.
+- The Linux/macOS and Windows validators implement the same completed-task compaction warning and keep existing Board closed-status failures unchanged.
+- The lifecycle fixture contains one deliberately bloated completed Notes task and one compact completed stub; CI requires the bloated task warning under strict validation without warning on the compact stub.
+- No new canonical memory file or runtime dependency is introduced.
+
+### Remaining boundary
+
+The warning is intentionally heuristic: it detects closed Notes sections over eight non-empty lines and shorter duplicated completion-detail sections when the same task exists in History. It does not attempt semantic prose equivalence between Notes and History.

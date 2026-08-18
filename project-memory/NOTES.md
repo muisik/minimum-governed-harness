@@ -1,194 +1,60 @@
 # Notes
 
-Task details, rationale, decisions, requirements, and risks.
+Open task detail plus durable rationale, decisions, requirements, and risks for ContextRail itself. Search by exact ID; completed task detail is compacted into `HISTORY.md`.
 
 ## TASK-0001 — Publish ContextRail v0.5 clean template distribution
 - Status: completed
 - Related: DEC-0002, DEC-0003
 - Last updated: 2026-07-01
-
-### Result
-
-The clean payload, v0.5 operating contract, required-field validation, minimal template CI, source-repository parity CI, documentation, and publication workflow were implemented and passed all three operating-system jobs.
+- History: project-memory/HISTORY.md#task-0001--publish-contextrail-v05-clean-template-distribution
 
 ## TASK-0002 — Add synchronized template and release distribution
 - Status: completed
 - Related: DEC-0004
 - Last updated: 2026-07-01
-
-### Context
-
-The Template Repository is the correct new-project installation channel, while GitHub Releases provide immutable versions, release notes, checksums, and a clean archive for existing or manually installed projects. Maintaining them as independent outputs would create drift risk.
-
-### Decisions
-
-A gated release workflow derives every output from `template/`, synchronizes the published template when needed, verifies a fresh clone, builds a clean ZIP, extracts and compares it, then creates the GitHub Release with checksum and file-manifest assets.
-
-### Requirements
-
-- The release target must be contained in `main`.
-- `vX.Y.Z`, `template/.contextrail-version`, and the changelog heading must agree.
-- Same-version source and published payloads must compare equal in normal CI.
-- The release must not be created before fresh-clone and archive round-trip verification succeeds.
-- The template repository may be updated only with `CONTEXTRAIL_TEMPLATE_TOKEN`.
-
-### Result
-
-Pull-request CI passed Linux, macOS, Windows, and published-template consistency checks. The merge marker started the gated workflow, which created `v0.5.0` only after source/template, fresh-clone, and extracted-archive equality gates. The official release path now publishes the clean ZIP, archive checksum, and per-file checksum manifest from the same canonical payload.
+- History: project-memory/HISTORY.md#task-0002--add-synchronized-template-and-release-distribution
 
 ## TASK-0003 — Add handoff adoption and task-linked code trace
 - Status: completed
 - Related: DEC-0005, DEC-0006
 - Last updated: 2026-07-01
-
-### Context
-
-ContextRail governed project-local work after it entered the repository, but it did not define how an external specification, assessment, or handoff package became local Board and Notes records. Source code and principal tests also had no minimal pointer back to the task context that explained why a durable behavior boundary existed.
-
-### Decisions
-
-- Add one generic `handoffs/HANDOFF.md` intake contract. External packages remain staging inputs and are converted into local records before implementation.
-- Add a language-native code comment containing `ContextRail: TASK-####` and a short current invariant at the smallest useful implementation boundary.
-- Reuse the same task marker in the principal regression test when a task establishes or changes testable runtime behavior.
-- Do not create a separate implementation mapping file, semantic retrieval layer, region marker system, or full code-change history.
-
-### Requirements
-
-- Handoff adoption searches and deduplicates before creating local identities.
-- Durable requirements, decisions, risks, rationale, acceptance criteria, and source provenance are captured in Notes.
-- Independently verifiable implementation work is represented as short local Board tasks.
-- Raw handoff packages do not become canonical project memory.
-- Code trace markers resolve to a task with a lifecycle record and Notes detail.
-- Exact duplicate task, decision, requirement, or risk titles under different identities are rejected after normalization.
-- Linux, macOS, and Windows validators implement the same checks.
-
-### Result
-
-The clean template now includes generic handoff staging and adoption guidance, task-linked code trace rules, positive implementation/test mapping fixtures, and cross-platform validators for title identity, orphan records, code-pointer integrity, and nearby invariant text. Pull-request Actions run `28544540035` passed all validation and exact failure-assertion steps on Linux, macOS, and Windows, along with the published-template version guard.
+- History: project-memory/HISTORY.md#task-0003--add-handoff-adoption-and-task-linked-code-trace
 
 ## TASK-0004 — Harden published version synchronization
 - Status: completed
 - Related: DEC-0004
 - Last updated: 2026-07-01
-
-### Context
-
-The first `v1.0.0` release attempt correctly synchronized the visible template payload but the mirror commit retained `.contextrail-version` as `0.5.0`. Fresh-clone equality verification blocked tag and release creation, proving the safety gate worked but exposing a staging gap for the hidden version file.
-
-### Requirements
-
-- Copy and force-stage `.contextrail-version` after payload synchronization.
-- Verify the published worktree and staged blob both equal the declared release version before commit and push.
-- Preserve the existing fresh-clone and archive round-trip gates.
-- Re-run the same `v1.0.0` release only after pull-request validation succeeds.
-
-### Result
-
-The release workflow now explicitly installs and stages the version file, verifies both worktree and staged values, and confirms the fresh clone declares the requested release version. Pull-request Actions run `28545034563` passed Linux, macOS, Windows, and the published-template version guard.
+- History: project-memory/HISTORY.md#task-0004--harden-published-version-synchronization
 
 ## TASK-0005 — Add governed agent delegation policy
 - Status: completed
 - Related: DEC-0007
 - Last updated: 2026-08-14
-
-### Context
-
-Modern coding environments may expose native subagents, worker agents, or multiple capability tiers. ContextRail should let a strong primary agent offload bounded mechanical or read-heavy work without making the user coordinate routine delegation, without allowing cheaper workers to make durable project decisions, and without turning ContextRail into a model router or multi-agent runtime.
-
-### Requirements
-
-- Keep the primary agent responsible for ambiguous requirements, architecture and domain decisions, security boundaries, destructive or data-risk operations, integration, independent review, and completion.
-- Permit delegation only for bounded, low-blast-radius, objectively verifiable work with explicit scope, acceptance criteria, verification evidence, and stop conditions.
-- Prefer zero or one focused worker for normal work and prevent overlapping writers unless the environment provides safe isolation.
-- Keep lifecycle records and canonical project-memory integration under primary-agent ownership unless explicitly delegated.
-- Treat worker output as untrusted until the primary agent inspects and verifies the actual result.
-- Remain provider- and model-independent.
-- Never authorize metered pay-as-you-go models, purchased credits, or external paid APIs without explicit user authorization.
-- When no suitable native worker exists, allow a concise copy-paste delegation brief only when the expected savings are material.
-
-### Result
-
-ContextRail `v1.1.0` was published from the canonical `template/` payload. Main distribution validation run `31808775511` passed, release workflow run `31808775525` synchronized and round-trip verified the clean template mirror, and the GitHub Release published the ZIP, archive checksum, and per-file checksum manifest. The mirror now declares `.contextrail-version` `1.1.0`.
+- History: project-memory/HISTORY.md#task-0005--add-governed-agent-delegation-policy
 
 ## TASK-0006 — Add reuse-first engineering policy
 - Status: completed
 - Related: DEC-0008
 - Last updated: 2026-08-16
-
-### Context
-
-For non-trivial engineering work, starting from a custom implementation can waste time and create avoidable maintenance when a proven standard capability, official interface, maintained open-source component, or compatible existing system already solves the commodity part of the problem. Reuse must still preserve project independence, license compatibility, security boundaries, and a practical replacement path.
-
-### Requirements
-
-- Require proportional ecosystem research before substantial custom implementation when a proven existing solution is reasonably likely.
-- Prefer standards, official APIs/SDKs/protocols, maintained open-source components, and compatible existing systems when they materially satisfy the requirement.
-- Evaluate functional fit, maintenance, security, license compatibility, portability, operational constraints, and replacement cost before adoption.
-- Incorporate external implementation code only when its license and terms are compatible with the project's intended use and distribution.
-- Allow incompatible sources to inform documented behavior, interfaces, architecture, failure modes, and tradeoffs while requiring independent implementation rather than copying, close translation, or line-by-line ports.
-- Keep replaceable third-party capability behind small project-owned boundaries when practical.
-- Prefer upstream use over unnecessary forks and keep justified fork or vendored deltas small and documented.
-- Keep research proportional; small or settled work must not expand into broad ecosystem surveys.
-
-### Result
-
-ContextRail `v1.3.0` adds a general reuse-first engineering section to the canonical agent contract and documents the same governance boundary without naming any project, product, provider, runtime, or application-specific implementation. Validator schemas and lifecycle formats are unchanged.
+- History: project-memory/HISTORY.md#task-0006--add-reuse-first-engineering-policy
 
 ## TASK-0007 — Refresh public README through ContextRail 1.3
 - Status: completed
 - Related: DEC-0007, DEC-0008
 - Last updated: 2026-08-16
-
-### Context
-
-The development-repository README was last materially updated on 2026-07-01 while defining the 1.0 contract. The repository has since added governed delegation, non-blocking version awareness with preserved user-owned instructions, and reuse-first engineering policy. Public links also still use the previous repository-owner alias even though the canonical repositories now resolve under `muisik`.
-
-### Requirements
-
-- Describe the current 1.3 operating contract rather than presenting 1.0 as the current feature boundary.
-- Preserve the four-file bounded memory model and the distinction between this development repository and the clean template distribution.
-- Cover handoff adoption, task-linked trace, root-cause-before-patch, independent review, governed delegation, version awareness/update behavior, user-owned instruction preservation, and reuse-first engineering.
-- Keep claims aligned with current code, validators, `AGENTS.md`, governance documentation, and release behavior.
-- Normalize visible repository links to the current `muisik` owner.
-- Keep the README concise enough to serve as an entry point; defer normative detail to `docs/GOVERNANCE.md` and `docs/ADOPTION.md`.
-
-### Result
-
-README now describes the current 1.3 operating contract, current repository identity, post-1.0 delegation/version/reuse policies, current validator boundaries, and synchronized distribution model while keeping normative detail in Governance and Adoption. Pull-request distribution validation run `31940965873` passed Linux, macOS, Windows, and published-template consistency before lifecycle closure.
+- History: project-memory/HISTORY.md#task-0007--refresh-public-readme-through-contextrail-13
 
 ## TASK-0008 — Add lightweight shared-work coordination
 - Status: completed
 - Related: DEC-0009
 - Last updated: 2026-08-16
+- History: project-memory/HISTORY.md#task-0008--add-lightweight-shared-work-coordination
 
-### Context
-
-`Owner` is already a required Board field, but it currently carries no operational coordination semantics. In shared repositories, people and coding agents benefit from seeing who owns an active task, which branch carries it, and which repository paths it expects to touch before parallel work begins. Mixed-agent teams also need a clear boundary between repository-shared instructions and each contributor's local agent preferences.
-
-### Requirements
-
-- Keep `Owner` required and backward-compatible; recommend `@github-user` when a GitHub identity is known without making GitHub availability a runtime dependency.
-- Add optional `Branch` and `Scope` task metadata. `Scope` is a comma-separated set of repository-relative path prefixes, not a file lock.
-- Provide OS-native coordination checks for Linux/macOS and Windows.
-- Warn once per pair when two active task scopes are equal or one scope is a path-prefix ancestor of the other.
-- When a GitHub Actions branch matches an active task's `Branch`, warn if a simple `@username` owner differs from `GITHUB_ACTOR`; do not hard-fail because pair work, bots, and delegated commits are valid.
-- Keep CODEOWNERS, branch protection, permissions, PR review, and merge policy authoritative. ContextRail exposes coordination state; it does not replace access control.
-- Treat the protected `AGENTS.md` instruction block as repository-shared project instruction; keep personal agent preferences in contributor-local or tool-local configuration.
-- Retain existing `CONTEXTRAIL:USER-INSTRUCTIONS` marker names for update compatibility and preserve the block verbatim across ContextRail updates.
-- Keep tool-specific repository files as thin entry points into canonical `AGENTS.md` so contributors can use different coding agents without duplicated project policy.
-- Keep the existing project-memory and task-linked code-trace validator contract unchanged.
-
-### Non-goals
-
-- No server-side task locking or claim service.
-- No GitHub API lookup to prove that an owner account exists.
-- No automatic assignment or task mutation from CI.
-- No requirement to annotate every changed code block with task metadata.
-- No repository storage of contributors' personal agent preferences.
-
-### Result
-
-The ContextRail `1.4.0` candidate adds optional `Branch` and path-prefix `Scope` metadata around the existing required `Owner`, cross-platform advisory coordination checkers, deterministic overlap and GitHub actor-mismatch fixtures, shared-repository agent guidance, repository-shared project-instruction semantics, thin mixed-agent adapters, and CI coverage. Distribution run `31959699018` passed the updated Linux and macOS jobs plus the coordination assertions and published-template consistency; Windows completed the same validation steps successfully. The candidate is ready for the normal pull-request, main-merge, and gated release flow.
+## TASK-0009 — Add task lifecycle completion compaction
+- Status: completed
+- Related: DEC-0010
+- Last updated: 2026-08-18
+- History: project-memory/HISTORY.md#task-0009--add-task-lifecycle-completion-compaction
 
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted
@@ -279,3 +145,13 @@ For non-trivial capabilities likely to have proven existing solutions, require p
 ### Decision
 
 Use existing Board ownership plus optional branch and path-scope metadata to make parallel work visible. Detect active scope overlap and GitHub branch-owner mismatch as advisory findings, while leaving permissions, ownership enforcement, review, locking, and merge authority to repository-native systems such as CODEOWNERS and branch protection. Keep `AGENTS.md` as the repository-shared project contract, keep contributors' personal preferences local, preserve the protected project-instruction block across updates, and retain tool-specific repository files only as thin adapters into the canonical contract.
+
+## DEC-0010 — Compact closed task detail into History
+- Status: accepted
+- Related: TASK-0009
+- Last updated: 2026-08-18
+- Reflected in: project-memory/SYSTEM.md — Primary Flows, Boundaries and Sources of Truth, Invariants, and Known Limits; template/AGENTS.md — Source roles, Task lifecycle and completion compaction, Completing work
+
+### Decision
+
+Keep the four-file memory model but make closure asymmetric: Board contains unfinished tasks, Notes contains open/planned task detail plus durable `REQ`/`DEC`/`RISK` rationale, and History owns detailed completion/cancellation evidence. Closed tasks may retain only a short Notes index stub. Cross-platform validators warn when a closed Notes task remains long or duplicates completion-detail sections already represented in History; strict validation treats those warnings as failures so stale memory is repaired instead of silently accumulating.

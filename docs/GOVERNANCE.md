@@ -8,6 +8,8 @@ ContextRail separates current system truth, unfinished work, reasoning, completi
 
 It contains a concise map of purpose, components, flows, boundaries, invariants, external interfaces, and current limits. It excludes open tasks, chronological logs, unresolved debates, and speculative future architecture.
 
+A completed task updates System only when it actually changed current architecture, flow, interface, ownership, an invariant, or a known limit. Completion by itself is not a reason to append historical detail to System.
+
 ## Board
 
 `project-memory/BOARD.md` answers: **What unfinished work exists now?**
@@ -33,15 +35,29 @@ Repository-native controls remain authoritative for access and merge governance:
 
 ## Notes
 
-`project-memory/NOTES.md` answers: **What does this work mean, why does it exist, and what has been decided?**
+`project-memory/NOTES.md` answers: **What does open/planned work mean, and what durable rationale still matters?**
 
-Task, decision, requirement, and risk records require `Status`, `Related`, and `Last updated`. Accepted decisions should identify where the resulting current truth is reflected. External source identifiers, implementation boundaries that cannot carry comments, and handoff provenance also belong in the relevant Notes record.
+Open or planned task, decision, requirement, and risk records require `Status`, `Related`, and `Last updated`. Accepted decisions should identify where the resulting current truth is reflected. External source identifiers, implementation boundaries that cannot carry comments, and handoff provenance also belong in the relevant Notes record while they remain useful.
+
+Completed or cancelled task detail does not remain here as a second history. A closed task may keep only a short index stub for discoverability, normally one to five lines after the heading. Durable `REQ-####`, `DEC-####`, and `RISK-####` records remain in Notes when they still explain current or future behavior; task closure does not delete them.
+
+Example compact stub:
+
+```text
+## TASK-NNNN — Example completed task
+- Status: completed
+- Related: DEC-NNNN, REQ-NNNN
+- Last updated: YYYY-MM-DD
+- History: project-memory/HISTORY.md#task-nnnn--example-completed-task
+```
 
 ## History
 
-`project-memory/HISTORY.md` answers: **What was completed or cancelled, and what evidence supports that state?**
+`project-memory/HISTORY.md` answers: **What was completed or cancelled, what evidence supports that state, what outcome resulted, and what boundary remains?**
 
 History contains only task records. Every record requires `Status`, `Related`, `Evidence`, and `Outcome`. Completed records require `Completed: YYYY-MM-DD`; cancelled records require `Cancelled: YYYY-MM-DD`.
+
+Detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary for closed tasks belong here. Full completion evidence must not be duplicated between Notes and History.
 
 ## External handoffs
 
@@ -58,6 +74,41 @@ proposed -> active -> blocked -> active -> completed
 
 The stable identity does not change when priority, milestone, owner, or status changes.
 
+Completion is a compaction boundary:
+
+```text
+unfinished TASK
+  BOARD + targeted NOTES detail
+          |
+          v
+completed / cancelled
+  HISTORY detailed evidence
+  NOTES optional short index stub
+  durable REQ / DEC / RISK remain in NOTES
+  SYSTEM only if current truth changed
+```
+
+The four-file model remains the minimal harness. Do not add another canonical file merely to split old task detail out of Notes.
+
+## Completion-compaction validation
+
+The OS-native validators detect structural signs that Notes is becoming a second History.
+
+A warning is emitted with:
+
+```text
+Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub.
+```
+
+when a `TASK-####` Notes section has `Status: completed` or `Status: cancelled` and either:
+
+- the closed Notes section exceeds eight non-empty lines; or
+- the same task exists in History and the Notes section still carries explicit `Evidence`, `Outcome`, `Acceptance`, or `Result` detail beyond a compact stub.
+
+These are warnings in validator classification, but `--strict` already treats any validator warning as exit code `2`. This is intentional: a repository using strict validation must compact stale completed-task detail rather than silently accumulating it.
+
+The check is heuristic and structural. It does not compare prose semantically or decide whether a durable requirement, decision, or risk should be retained. The agent must preserve still-relevant durable records before compaction.
+
 ## Stable identities and titles
 
 - Search before creating a task, decision, requirement, or risk.
@@ -72,8 +123,8 @@ Title normalization ignores case, repeated whitespace, and punctuation. It is a 
 
 - current architecture and boundaries: System;
 - unfinished task state and optional coordination metadata: Board;
-- task detail and rationale: Notes;
-- completion and cancellation evidence: History;
+- open/planned task detail and durable rationale: Notes;
+- completion/cancellation detail and evidence: History;
 - external intake procedure: `handoffs/HANDOFF.md`;
 - raw handoff packages: non-canonical source evidence under `handoffs/`;
 - runtime behavior: source code and native tests;
@@ -82,7 +133,7 @@ Title normalization ignores case, repeated whitespace, and punctuation. It is a 
 - personal agent preferences: contributor-local or tool-local configuration outside the shared repository contract;
 - repository access, CODEOWNERS, branch protection, required review, and merge authority: repository-native hosting controls.
 
-A task may appear in Board and Notes because they serve different roles. A task must not appear in Board and History simultaneously.
+A task may appear in Board and Notes because they serve different roles. A task must not appear in Board and History simultaneously. A closed task may appear in Notes and History only when the Notes copy is a compact index stub rather than duplicated evidence.
 
 ## Repository and personal agent instructions
 
@@ -107,7 +158,7 @@ The marker points to the task that best explains the current invariant. It does 
 
 Place the marker before the complete symbol when the task governs the symbol, or immediately before the narrower block or statement when it governs only that behavior. Preserve it through refactoring, replace it when a later task changes the invariant, and leave it unchanged for mechanical edits that preserve the behavior contract.
 
-Generated code, vendor code, binaries, lock files, and formats that cannot safely carry comments are not modified for traceability. Record those implementation boundaries in the task's Notes section.
+Generated code, vendor code, binaries, lock files, and formats that cannot safely carry comments are not modified for traceability. Record those implementation boundaries in the task's Notes section while the task is open; after closure, preserve any necessary completion evidence in History and rely on the current governing task/invariant for live code behavior.
 
 Validators confirm that code markers point to a task with a Board or History lifecycle record and matching Notes detail. They do not prove that the stated invariant is semantically correct.
 
@@ -147,7 +198,7 @@ Custom infrastructure therefore requires justification. ContextRail favors ownin
 
 ## Atomic completion
 
-Complete implementation, native tests, code-trace maintenance, Board removal, Notes update, History evidence, System updates, public docs, self-review, and canonical verification as one lifecycle change.
+Complete implementation, native tests, code-trace maintenance, Board removal, Notes compaction, History evidence, conditional System updates, public docs, self-review, and canonical verification as one lifecycle change. Do not leave a completed task's full evidence in Notes after History becomes canonical.
 
 ## Adapter governance
 
@@ -155,4 +206,4 @@ Complete implementation, native tests, code-trace maintenance, Board removal, No
 
 ## When to add another memory file
 
-Add one only when a separate owner, security boundary, lifecycle, independent reuse need, or enough search noise creates a real boundary. Do not split merely because a section is long. External handoffs and implementation traces should point into the existing four memory roles rather than creating new canonical stores.
+Add one only when a separate owner, security boundary, lifecycle, independent reuse need, or enough search noise creates a real boundary. Do not split merely because a section is long. Completion compaction, external handoffs, and implementation traces should continue to use the existing four memory roles rather than creating new canonical stores.

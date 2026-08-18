@@ -21,12 +21,14 @@ Everything between these markers is repository-owned project instruction shared 
 ## Source roles
 
 - `project-memory/SYSTEM.md` — canonical current system model.
-- `project-memory/BOARD.md` — canonical unfinished work queue.
-- `project-memory/NOTES.md` — task detail, rationale, decisions, requirements, and risks.
-- `project-memory/HISTORY.md` — canonical completion and cancellation evidence.
+- `project-memory/BOARD.md` — canonical unfinished work queue; only `proposed`, `active`, or `blocked` tasks belong here.
+- `project-memory/NOTES.md` — open or planned task detail plus durable rationale, decisions, requirements, and risks. Completed or cancelled task detail is compacted out of Notes.
+- `project-memory/HISTORY.md` — canonical completion and cancellation evidence, including detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary for closed tasks.
 - `handoffs/HANDOFF.md` — canonical procedure for adopting external work packages into local records.
 - Source code and native project tests — canonical runtime behavior.
 - README and user-facing documentation — canonical public claims.
+
+Lifecycle rule: unfinished task state lives in Board + targeted Notes detail; closed task evidence lives in History. A completed or cancelled task may retain only a short Notes stub for discoverability. Durable `REQ`, `DEC`, and `RISK` records do not disappear merely because a related task closed.
 
 ## First adoption bootstrap
 
@@ -51,8 +53,8 @@ When ContextRail is newly added to an existing repository:
 4. Read `project-memory/BOARD.md`.
 5. If a package exists under `handoffs/incoming/`, or external handoff adoption was explicitly requested, read `handoffs/HANDOFF.md` and adopt the package into local records before implementation.
 6. Select exactly one active or explicitly requested task.
-7. Search `project-memory/NOTES.md` by the exact task ID.
-8. Read only the matching Notes section and directly related records.
+7. Search `project-memory/NOTES.md` by the exact `TASK-####` ID and directly related `DEC-####`, `REQ-####`, or `RISK-####` IDs.
+8. Read only the matching Notes sections; do not load all of `NOTES.md` as background context.
 9. Inspect only the code, tests, logs, and configuration needed for that task.
 10. Use the agent's native planner for implementation steps.
 
@@ -73,7 +75,8 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Search before creating a task, decision, requirement, or risk.
 - Reuse the existing identity when the work already exists.
 - Keep Board entries short and actionable.
-- Put detail and rationale in Notes.
+- Put open task detail and durable rationale in Notes.
+- Keep completed or cancelled task evidence in History rather than duplicating it in Notes.
 - Keep stable architecture truth in System.
 - Do not duplicate full decision text across files.
 - Treat raw external handoffs as non-canonical staging inputs.
@@ -82,6 +85,33 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Do not broaden scope silently.
 - Do not claim completion without evidence.
 - Do not assume another reviewer will catch mistakes.
+
+## Task lifecycle and completion compaction
+
+Keep the four-file model as the default minimal harness: `SYSTEM.md`, `BOARD.md`, `NOTES.md`, and `HISTORY.md`. Do not create another canonical memory file merely to separate completed task detail.
+
+While a task is `proposed`, `active`, or `blocked`, its short lifecycle state belongs in `BOARD.md` and any necessary implementation detail belongs in the matching `NOTES.md` section.
+
+When a task becomes `completed` or `cancelled`:
+
+1. remove it from `BOARD.md`;
+2. move detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary from the task's Notes section into `HISTORY.md`;
+3. leave only a short completed-task Notes stub when exact-ID discoverability is useful;
+4. keep related `REQ-####`, `DEC-####`, and `RISK-####` records in `NOTES.md` when they remain durable rationale, requirements, or risks;
+5. do not duplicate full evidence, acceptance, or outcome text between `NOTES.md` and `HISTORY.md`;
+6. update `SYSTEM.md` only when the completed work changed current system truth, an interface, invariant, flow, ownership boundary, or known limit.
+
+A compact closed-task stub should normally fit in one to five lines after its heading, for example:
+
+```text
+## TASK-NNNN — Example completed task
+- Status: completed
+- Related: DEC-NNNN, REQ-NNNN
+- Last updated: YYYY-MM-DD
+- History: project-memory/HISTORY.md#task-nnnn--example-completed-task
+```
+
+`HISTORY.md` is the canonical place to answer what finished, what was verified, what outcome resulted, and what boundary remains. Git history remains the source for chronological file edits; Notes must not become a second History.
 
 ## Shared repository coordination
 
@@ -267,7 +297,7 @@ On the first substantive coding task, discover the existing native verification 
 
 The canonical verification command should run the relevant project tests, build, lint, static analysis, scenario or smoke checks, and ContextRail validation as appropriate. Do not create a second parallel test system when an established verification entrypoint already exists.
 
-The ContextRail validator checks project-memory governance and task-linked code-reference integrity only. It does not replace native project tests.
+The ContextRail validator checks project-memory governance, lifecycle compaction, and task-linked code-reference integrity only. It does not replace native project tests.
 
 The shared-work coordination checker is advisory and separate from canonical correctness validation. Run it before substantial parallel work when multiple active tasks may overlap; do not interpret a clean coordination check as proof that code changes are conflict-free.
 
@@ -285,9 +315,11 @@ Before creating a record, search titles, keywords, likely IDs, and related code.
 1. Implement and verify the task using the project's native toolchain.
 2. Perform the independent review.
 3. Remove the task from `BOARD.md`.
-4. Update its detail and related records in `NOTES.md`.
-5. Add completion or cancellation evidence to `HISTORY.md`.
-6. Update `SYSTEM.md` when current architecture, flow, interface, ownership, or invariants changed.
-7. Update public docs when user-visible behavior changed.
-8. Run the repository's canonical verification command.
-9. Do not mark the task complete while verification is failing or evidence is incomplete.
+4. Move detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary from the task's `NOTES.md` section to `HISTORY.md`.
+5. Leave only a short completed or cancelled task stub in `NOTES.md` when discoverability is useful.
+6. Keep related `REQ-####`, `DEC-####`, and `RISK-####` records in `NOTES.md` when they remain durable.
+7. Do not duplicate full evidence, acceptance, or outcome text between `NOTES.md` and `HISTORY.md`.
+8. Update `SYSTEM.md` only when current architecture, flow, interface, ownership, invariants, or known limits changed.
+9. Update public docs when user-visible behavior changed.
+10. Run the repository's canonical verification command.
+11. Do not mark the task complete while verification is failing or evidence is incomplete.

@@ -15,9 +15,11 @@ The distributed external-intake contract lives at `template/handoffs/HANDOFF.md`
 - `README.md` and `docs/` — public explanation, adoption, and governance documentation.
 - `tests/fixtures/valid-trace/` — valid implementation and principal-test task trace used to prove the positive path.
 - `tests/fixtures/invalid/` — deliberately invalid memory and code-trace examples used to prove specific failures.
-- `.github/workflows/validate-memory.yml` — tests validator parity, asserts expected failure classes, and detects same-version drift between `template/` and the published template repository.
+- `tests/fixtures/lifecycle-compaction/` — completed-task Notes bloat plus compact closed-task stub used to prove lifecycle compaction warnings without false positives on the compact form.
+- `tests/fixtures/team-coordination/` — deterministic shared-work overlap and GitHub actor-mismatch examples.
+- `.github/workflows/validate-memory.yml` — tests validator parity, asserts expected failure/warning classes, and detects same-version drift between `template/` and the published template repository.
 - `.github/workflows/release.yml` — synchronizes the published template, builds and round-trip verifies the release archive, and creates the official GitHub Release.
-- `project-memory/` — ContextRail's own current system model and work lifecycle.
+- `project-memory/` — ContextRail's own current system model and work lifecycle; this repository must obey the same completion-compaction contract it distributes.
 
 ## Distribution rules
 
@@ -39,12 +41,14 @@ When adding or changing a rule:
 1. update the canonical scripts under `template/scripts/`;
 2. update all operating-system implementations in the same task;
 3. add or update a valid fixture when the new behavior needs a positive example;
-4. add or update an invalid fixture that proves the rule fails;
-5. assert the expected failure text in CI so an unrelated old failure cannot masquerade as coverage;
+4. add or update an invalid or warning fixture that proves the rule is actually detected;
+5. assert the expected failure or warning text in CI so an unrelated old finding cannot masquerade as coverage;
 6. verify the empty template passes;
 7. verify the valid trace fixture passes;
 8. verify the invalid fixture fails on all three platforms;
-9. update public documentation and the changelog.
+9. when a warning is strict-failing, assert the strict exit code as well as the exact warning text;
+10. update public documentation and the changelog;
+11. apply the same memory-lifecycle rule to this repository's own `project-memory/` records before claiming completion.
 
 ## Canonical verification
 

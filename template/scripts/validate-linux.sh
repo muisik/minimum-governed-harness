@@ -249,6 +249,42 @@ comm -23 "$TMP/note-tasks.unique" "$TMP/lifecycle.unique" | while IFS= read -r i
   [ -n "$id" ] && warn "$id has Notes detail but no Board or History lifecycle record"
 done
 
+awk '
+NR==FNR {
+  if ($0 ~ /^## TASK-[0-9][0-9][0-9][0-9]([[:space:]]|$)/) history[$2]=1
+  next
+}
+function flush() {
+  if(id=="") return
+  if(status!="completed" && status!="cancelled") return
+  if(nonblank > 8 || (history[id] && completion_detail && nonblank > 5)) print id
+}
+/^## (TASK|DEC|REQ|RISK)-[0-9][0-9][0-9][0-9]([[:space:]]|$)/ {
+  flush()
+  if($2 ~ /^TASK-/) {
+    id=$2
+    status=""
+    nonblank=1
+    completion_detail=0
+  } else {
+    id=""
+  }
+  next
+}
+id!="" {
+  if($0 !~ /^[[:space:]]*$/) nonblank++
+  if($0 ~ /^- Status:[[:space:]]*/) {
+    status=$0
+    sub(/^- Status:[[:space:]]*/,"",status)
+    status=tolower(status)
+  }
+  if($0 ~ /^###?[[:space:]]+(Evidence|Outcome|Acceptance|Result)([[:space:]]|$)/ || $0 ~ /^- (Evidence|Outcome|Acceptance):[[:space:]]*/) completion_detail=1
+}
+END {flush()}
+' "$HISTORY" "$NOTES" | while IFS= read -r id; do
+  [ -n "$id" ] && warn "$id: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+done
+
 cat "$TMP/board.ids" "$TMP/notes.ids" "$TMP/history.ids" | sort -u > "$TMP/known.ids"
 awk '
 /^## (TASK|DEC|REQ|RISK)-[0-9][0-9][0-9][0-9][[:space:]]/ {source=$2; next}

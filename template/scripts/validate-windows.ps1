@@ -123,6 +123,56 @@ function Parse-Records {
     return $Records
 }
 
+function Check-CompletedTaskCompaction {
+    param(
+        [string]$NotesPath,
+        [string]$HistoryPath
+    )
+
+    $HistoryIds = @{}
+    foreach ($Line in Get-Content -LiteralPath $HistoryPath -Encoding UTF8) {
+        if ($Line -match '^## (TASK-[0-9]{4})(?:[ ]+[—-])?[ ]*') {
+            $HistoryIds[$Matches[1]] = $true
+        }
+    }
+
+    $Lines = @(Get-Content -LiteralPath $NotesPath -Encoding UTF8)
+    $Starts = @()
+    for ($Index = 0; $Index -lt $Lines.Count; $Index++) {
+        if ([string]$Lines[$Index] -match '^## (TASK|DEC|REQ|RISK)-[0-9]{4}(?:[ ]|$)') {
+            $Starts += $Index
+        }
+    }
+
+    for ($StartIndex = 0; $StartIndex -lt $Starts.Count; $StartIndex++) {
+        $Start = $Starts[$StartIndex]
+        $Heading = [string]$Lines[$Start]
+        if ($Heading -notmatch '^## (TASK-[0-9]{4})(?:[ ]+[—-])?[ ]*') { continue }
+        $TaskId = $Matches[1]
+        $End = if ($StartIndex + 1 -lt $Starts.Count) { $Starts[$StartIndex + 1] - 1 } else { $Lines.Count - 1 }
+
+        $Status = ""
+        $NonBlankCount = 0
+        $HasCompletionDetail = $false
+        for ($LineIndex = $Start; $LineIndex -le $End; $LineIndex++) {
+            $Line = [string]$Lines[$LineIndex]
+            if (-not [string]::IsNullOrWhiteSpace($Line)) { $NonBlankCount++ }
+            if ($Line -match '^- Status:[ ]*(.*)$') {
+                $Status = $Matches[1].Trim().ToLowerInvariant()
+            }
+            if ($Line -match '^###?[ ]+(Evidence|Outcome|Acceptance|Result)(?:[ ]|$)' -or $Line -match '^- (Evidence|Outcome|Acceptance):[ ]*') {
+                $HasCompletionDetail = $true
+            }
+        }
+
+        if ($Status -notin @('completed','cancelled')) { continue }
+        $DuplicatesHistoryDetail = $HistoryIds.ContainsKey($TaskId) -and $HasCompletionDetail -and $NonBlankCount -gt 5
+        if ($NonBlankCount -gt 8 -or $DuplicatesHistoryDetail) {
+            Report-Warning "$TaskId`: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+        }
+    }
+}
+
 $Memory = Join-Path $Root "project-memory"
 $SystemPath = Join-Path $Memory "SYSTEM.md"
 $BoardPath = Join-Path $Memory "BOARD.md"
@@ -238,6 +288,8 @@ foreach ($Id in $NoteTaskIds) {
         Report-Warning "$Id has Notes detail but no Board or History lifecycle record"
     }
 }
+
+Check-CompletedTaskCompaction -NotesPath $NotesPath -HistoryPath $HistoryPath
 
 foreach ($Record in @($Board + $Notes + $History)) {
     foreach ($Reference in $Record.References) {

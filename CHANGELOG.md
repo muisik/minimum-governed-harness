@@ -2,6 +2,18 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.5.0
+
+- Added an explicit task-lifecycle and completion-compaction contract while preserving the four-file `SYSTEM / BOARD / NOTES / HISTORY` model.
+- Clarified that Board contains only unfinished `proposed`, `active`, or `blocked` tasks; Notes contains open/planned task detail plus durable `REQ`, `DEC`, and `RISK` rationale; History is canonical for completed/cancelled implementation detail and evidence.
+- Require detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary to move from a closed task's Notes section into History; Notes may retain only a short discoverability stub.
+- Clarified that related durable requirements, decisions, and risks remain in Notes after task closure when they still explain current or future behavior, and that System changes only when completion changed current truth.
+- Preserved exact-ID Notes retrieval during session bootstrap and explicitly prohibited full Notes loading as default background context.
+- Added Linux/macOS and Windows validator parity for completed-task Notes compaction. Validators warn when a closed Notes task exceeds eight non-empty lines or retains explicit completion-detail sections while the same task exists in History.
+- Strict validation treats the new compaction warnings like existing warnings and exits with code `2`; repositories using strict validation must repair stale completed-task Notes detail.
+- Added a deterministic lifecycle-compaction fixture proving the bloated closed-task warning and a compact completed-task stub that must not trigger it.
+- Applied the lifecycle rule to ContextRail's own project memory by compacting historical completed task Notes into History-linked stubs and recording the durable policy as `DEC-0010`.
+
 ## 1.4.0
 
 - Added optional shared-repository coordination metadata using the existing required `Owner` field plus optional `Branch` and comma-separated path-prefix `Scope` fields.

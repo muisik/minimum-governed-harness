@@ -18,6 +18,22 @@ jobs:
         run: sh template/scripts/validate-linux.sh --root . --strict
       - name: Validate task-linked trace fixture
         run: sh template/scripts/validate-linux.sh --root tests/fixtures/valid-trace --strict
+      - name: Confirm lifecycle compaction warning
+        run: |
+          set +e
+          output="$(sh template/scripts/validate-linux.sh --root tests/fixtures/lifecycle-compaction --strict 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$status" -ne 2 ]; then
+            echo "Lifecycle compaction fixture should fail strict validation with warning exit code 2; got $status"
+            exit 1
+          fi
+          printf '%s\n' "$output" | grep -F "TASK-0200: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+          if printf '%s\n' "$output" | grep -F "TASK-0201: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub." >/dev/null; then
+            echo "Compact completed-task stub unexpectedly triggered lifecycle warning"
+            exit 1
+          fi
       - name: Check current shared-work coordination
         run: sh template/scripts/check-coordination.sh --root .
       - name: Confirm coordination advisories
@@ -51,6 +67,22 @@ jobs:
         run: sh template/scripts/validate-macos.sh --root . --strict
       - name: Validate task-linked trace fixture
         run: sh template/scripts/validate-macos.sh --root tests/fixtures/valid-trace --strict
+      - name: Confirm lifecycle compaction warning
+        run: |
+          set +e
+          output="$(sh template/scripts/validate-macos.sh --root tests/fixtures/lifecycle-compaction --strict 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$status" -ne 2 ]; then
+            echo "Lifecycle compaction fixture should fail strict validation with warning exit code 2; got $status"
+            exit 1
+          fi
+          printf '%s\n' "$output" | grep -F "TASK-0200: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+          if printf '%s\n' "$output" | grep -F "TASK-0201: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub." >/dev/null; then
+            echo "Compact completed-task stub unexpectedly triggered lifecycle warning"
+            exit 1
+          fi
       - name: Check current shared-work coordination
         run: sh template/scripts/check-coordination.sh --root .
       - name: Confirm coordination advisories
@@ -87,6 +119,36 @@ jobs:
       - name: Validate task-linked trace fixture
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File template\scripts\validate-windows.ps1 -Root tests\fixtures\valid-trace -Strict
+      - name: Confirm lifecycle compaction warning
+        shell: powershell
+        run: |
+          $stdout = Join-Path $env:RUNNER_TEMP "lifecycle-compaction.stdout.txt"
+          $stderr = Join-Path $env:RUNNER_TEMP "lifecycle-compaction.stderr.txt"
+          $arguments = @(
+            '-NoProfile',
+            '-ExecutionPolicy', 'Bypass',
+            '-File', 'template\scripts\validate-windows.ps1',
+            '-Root', 'tests\fixtures\lifecycle-compaction',
+            '-Strict'
+          )
+          $process = Start-Process -FilePath 'powershell.exe' -ArgumentList $arguments -Wait -PassThru -NoNewWindow -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+          $status = $process.ExitCode
+          $text = ((Get-Content -LiteralPath $stdout -Raw -ErrorAction SilentlyContinue) + "`n" + (Get-Content -LiteralPath $stderr -Raw -ErrorAction SilentlyContinue))
+          Write-Host $text
+          if ($status -ne 2) {
+            Write-Error "Lifecycle compaction fixture should fail strict validation with warning exit code 2; got $status"
+            exit 1
+          }
+          $expected = "TASK-0200: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+          if (-not $text.Contains($expected)) {
+            Write-Error "Expected lifecycle compaction warning was not emitted"
+            exit 1
+          }
+          $unexpected = "TASK-0201: Completed task detail should live in HISTORY.md; leave only a short NOTES.md stub."
+          if ($text.Contains($unexpected)) {
+            Write-Error "Compact completed-task stub unexpectedly triggered lifecycle warning"
+            exit 1
+          }
       - name: Check current shared-work coordination
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File template\scripts\check-coordination.ps1 -Root .

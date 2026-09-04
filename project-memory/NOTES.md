@@ -179,7 +179,7 @@ Keep the four-file memory model but make closure asymmetric: Board contains unfi
 - Status: accepted
 - Related: TASK-0010
 - Last updated: 2026-09-04
-- Planned reflection: template/AGENTS.md — Recoverability before destructive change; project-memory/SYSTEM.md — Primary Flows and Invariants
+- Reflected in: template/AGENTS.md — Recoverability before destructive change; docs/SAFETY-GUARDRAILS.md — Proven recoverability before destructive change
 
 ### Decision
 
@@ -189,7 +189,7 @@ Before a destructive, irreversible, or material data-loss-risk operation, requir
 - Status: accepted
 - Related: TASK-0010
 - Last updated: 2026-09-04
-- Planned reflection: template/AGENTS.md — Durable decision rationale and technical debt; project-memory/SYSTEM.md — Primary Flows, Boundaries and Sources of Truth, and Invariants
+- Reflected in: template/AGENTS.md — Durable decision rationale and technical debt; template/project-memory/NOTES.md; docs/SAFETY-GUARDRAILS.md — Durable rationale for material agent decisions
 
 ### Decision
 

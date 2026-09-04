@@ -84,3 +84,23 @@ Allowed statuses: `completed`, `cancelled`.
 ### Remaining boundary
 
 The warning is intentionally heuristic: it detects closed Notes sections over eight non-empty lines and shorter duplicated completion-detail sections when the same task exists in History. It does not attempt semantic prose equivalence between Notes and History.
+
+## TASK-0010 — Add recoverability and durable-rationale guardrails
+- Status: completed
+- Completed: 2026-09-04
+- Related: DEC-0011, DEC-0012
+- Evidence: Source validation run `33857951568` completed successfully on the `v1.5.1` release commit `320fa2921220c78b62e0576b20002a057be83ad7`; release workflow run `33857951664` completed successfully, synchronized the canonical template payload to the published mirror, round-trip verified it, and published GitHub Release `v1.5.1` with ZIP, SHA-256 checksum, and manifest. The published mirror declares `.contextrail-version` `1.5.1`.
+- Outcome: Added two semantic agent guardrails to the canonical template: destructive or material data-loss-risk work requires proven asset-appropriate recoverability unless permanent destruction of the exact target is explicitly authorized, and material agent-made technical decisions plus deliberate technical debt preserve durable rationale without creating noise for trivial local choices. Rationale does not expand delegated authority. The template Notes guidance, public safety documentation, changelog, release payload, and ContextRail's current system model reflect the same behavior.
+
+### Acceptance proof
+
+- `template/AGENTS.md` contains dedicated sections for durable decision rationale/technical debt and recoverability before destructive change.
+- `template/project-memory/NOTES.md` explains when agent-made rationale and technical-debt context belong in durable project memory.
+- `docs/SAFETY-GUARDRAILS.md` documents the public semantic contract and explains why it is not represented as a brittle keyword validator.
+- `project-memory/SYSTEM.md` reflects the two guardrails in current purpose, flows, boundaries, invariants, known limits, and decision references.
+- `CHANGELOG.md` and the distributed `.contextrail-version` identify release `1.5.1`; the published mirror and release archive were verified by the synchronized release workflow.
+- No new canonical memory file, runtime dependency, or validator schema was introduced.
+
+### Remaining boundary
+
+ContextRail records and instructs these semantic guardrails but does not prove backup restoreability, decision materiality, or technical-debt rationale quality mechanically. Project-native backup/restore controls, authorization, tests, CI, and operational safeguards remain authoritative.

@@ -2,6 +2,17 @@
 
 All notable changes to ContextRail are documented here.
 
+## 1.5.1
+
+- Added a recoverability-before-destruction guardrail: destructive, irreversible, or material data-loss-risk operations require a concrete recovery path appropriate to the affected asset rather than a presumed backup.
+- Clarified that tracked source may rely on a known recoverable Git state when existing user changes are preserved, while databases, persistent data, external resources, untracked files, and non-reproducible assets require an appropriate backup, snapshot, export, version, rollback, or equivalent mechanism whose scope and freshness are understood.
+- Added a narrow exception for explicitly user-authorized permanent destruction of the exact target while prohibiting collateral loss outside the stated scope.
+- Added durable-rationale guidance for material agent-made technical decisions that constrain future work; rationale belongs in project memory rather than only in chat, private reasoning, scratchpads, generated prose, or commit messages.
+- Clarified that rationale never expands delegated authority: decisions outside the selected task, accepted requirements, security boundary, public contract, or another owned authority still require user direction.
+- Added explicit technical-debt traceability: deliberate debt records what was deferred, why, its consequence or risk, and a concrete repayment trigger or condition; trivial local implementation choices remain unlogged.
+- Updated the clean template Notes guidance and public safety/rationale documentation without adding a new canonical memory file or validator schema; recoverability sufficiency and decision materiality remain semantic judgments.
+- Dogfooded the change in ContextRail's own `project-memory/` using TASK-0010, DEC-0011, and DEC-0012 before publishing the synchronized template payload.
+
 ## 1.5.0
 
 - Added an explicit task-lifecycle and completion-compaction contract while preserving the four-file `SYSTEM / BOARD / NOTES / HISTORY` model.

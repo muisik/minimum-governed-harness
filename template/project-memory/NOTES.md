@@ -8,6 +8,10 @@ Accepted decisions should also identify where the resulting current truth is ref
 
 When useful, an open task detail may include its governing invariant, external handoff references, acceptance detail, and code or test boundaries that cannot safely carry native comments.
 
+Material agent-made technical decisions that constrain future work should preserve durable rationale here when the user did not already make that choice and the agent had authority to decide it. Record enough context to explain why the choice was made and which material constraints or tradeoffs shaped it. Do not create durable records for trivial local implementation choices.
+
+Deliberate technical debt should state what was deferred, why it was deferred, its consequence or risk, and a concrete repayment trigger or condition. Avoid anonymous TODOs whose rationale and exit condition will be lost.
+
 When a task is completed or cancelled, detailed implementation notes, acceptance proof, test evidence, outcome, and remaining boundary move to `HISTORY.md`. Keep only a short Notes stub when discoverability is useful. Durable `DEC`, `REQ`, and `RISK` records remain here when they still explain current or future work.
 
 Completed-task stub example:

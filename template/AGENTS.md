@@ -86,6 +86,26 @@ Open design work belongs in `NOTES.md`. When a decision is accepted and implemen
 - Do not claim completion without evidence.
 - Do not assume another reviewer will catch mistakes.
 
+## Durable decision rationale and technical debt
+
+Stay within the selected task, accepted scope, and delegated authority. Keep project memory current when material implementation work creates a durable decision, changes current truth, or intentionally leaves a meaningful constraint for future work.
+
+When the user has not already made a material technical choice and the agent is authorized to decide it, record durable rationale in the appropriate `NOTES.md` task detail, `DEC-####`, `REQ-####`, or `RISK-####` record when the decision materially affects architecture, interfaces, ownership, security or permissions, data shape or migration behavior, dependencies or providers, compatibility, cost/performance tradeoffs, scope or acceptance interpretation, durable invariants, or future implementation constraints.
+
+Do not leave material rationale only in chat, private reasoning, scratchpads, generated prose, or commit messages. Record enough context to explain why the choice was made and which material constraints or tradeoffs shaped it. When provenance matters, distinguish a user-directed decision from an agent-made implementation decision.
+
+Rationale does not grant authority. If a material choice would exceed the selected task, delegated scope, accepted requirements, security boundary, public contract, or another authority the agent does not own, stop and obtain user direction instead of making the choice unilaterally and documenting it afterward.
+
+Do not create durable records for trivial local implementation choices that do not constrain future work. Deliberate technical debt is not trivial: record what was deferred, why it was deferred, its consequence or risk, and a concrete repayment trigger or condition. Avoid anonymous TODOs whose reason and exit condition will be lost.
+
+## Recoverability before destructive change
+
+Before any destructive, irreversible, or material data-loss-risk operation, establish a concrete recovery path appropriate to the affected asset. Recoverability must be proven rather than presumed.
+
+For tracked source code, preserve existing user changes and ensure the prior state is recoverable from a known Git state. For databases, persistent data, external resources, untracked files, generated assets that are not reproducible from source, or other state outside normal version control, verify an appropriate backup, snapshot, export, version, rollback mechanism, or equivalent recovery path whose scope and freshness are understood.
+
+The mere existence of a backup system is not enough when it is unknown whether the affected state is covered or current. If a reasonable recovery path cannot be established, do not perform the destructive operation. The only exception is when irreversible destruction of that exact target is itself the explicitly user-authorized outcome; that authorization does not permit collateral deletion, reset, overwrite, or history loss outside the stated scope.
+
 ## Task lifecycle and completion compaction
 
 Keep the four-file model as the default minimal harness: `SYSTEM.md`, `BOARD.md`, `NOTES.md`, and `HISTORY.md`. Do not create another canonical memory file merely to separate completed task detail.

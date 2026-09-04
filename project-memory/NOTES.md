@@ -57,23 +57,10 @@ Open task detail plus durable rationale, decisions, requirements, and risks for 
 - History: project-memory/HISTORY.md#task-0009--add-task-lifecycle-completion-compaction
 
 ## TASK-0010 — Add recoverability and durable-rationale guardrails
-- Status: active
+- Status: completed
 - Related: DEC-0011, DEC-0012
 - Last updated: 2026-09-04
-
-### Goal
-
-Add two complementary distributed agent invariants without expanding ContextRail into a runtime policy engine: destructive or data-loss-risk work must establish a concrete recovery path before execution, and material agent-made technical decisions must leave durable rationale when they affect future behavior or work.
-
-### Acceptance
-
-- `template/AGENTS.md` requires proven recoverability before destructive, irreversible, or data-loss-risk operations, with an explicit exception only when permanent destruction of that exact target is itself the user-authorized outcome.
-- Material agent-made decisions remain within delegated scope and authority; durable decisions record rationale in project memory rather than only in chat, scratchpad, commit prose, or the implementing agent's private reasoning.
-- Deliberate technical debt records what was deferred, why, the consequence/risk, and a concrete repayment trigger or condition.
-- Trivial local implementation choices do not require durable decision records.
-- Public governance documentation and current ContextRail system truth explain the same policy.
-- No validator schema or new canonical memory file is introduced because materiality, recoverability sufficiency, and decision rationale are semantic judgments rather than safely machine-checkable syntax.
-- Version `1.5.1` is released from the synchronized `template/` payload.
+- History: project-memory/HISTORY.md#task-0010--add-recoverability-and-durable-rationale-guardrails
 
 ## DEC-0001 — Separate current truth, work, rationale, and evidence
 - Status: accepted
@@ -179,7 +166,7 @@ Keep the four-file memory model but make closure asymmetric: Board contains unfi
 - Status: accepted
 - Related: TASK-0010
 - Last updated: 2026-09-04
-- Reflected in: template/AGENTS.md — Recoverability before destructive change; docs/SAFETY-GUARDRAILS.md — Proven recoverability before destructive change
+- Reflected in: project-memory/SYSTEM.md — Primary Flows, Invariants, and Known Limits; template/AGENTS.md — Recoverability before destructive change; docs/SAFETY-GUARDRAILS.md — Proven recoverability before destructive change
 
 ### Decision
 
@@ -189,7 +176,7 @@ Before a destructive, irreversible, or material data-loss-risk operation, requir
 - Status: accepted
 - Related: TASK-0010
 - Last updated: 2026-09-04
-- Reflected in: template/AGENTS.md — Durable decision rationale and technical debt; template/project-memory/NOTES.md; docs/SAFETY-GUARDRAILS.md — Durable rationale for material agent decisions
+- Reflected in: project-memory/SYSTEM.md — Primary Flows, Boundaries and Sources of Truth, Invariants, and Known Limits; template/AGENTS.md — Durable decision rationale and technical debt; template/project-memory/NOTES.md; docs/SAFETY-GUARDRAILS.md — Durable rationale for material agent decisions
 
 ### Decision
 

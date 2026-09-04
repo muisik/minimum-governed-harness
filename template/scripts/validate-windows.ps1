@@ -301,10 +301,31 @@ foreach ($Record in @($Board + $Notes + $History)) {
 
 $RootPrefix = $Root.TrimEnd([IO.Path]::DirectorySeparatorChar, [IO.Path]::AltDirectorySeparatorChar) + [IO.Path]::DirectorySeparatorChar
 $ExcludedDirectoryPattern = '(^|/)(\.git|node_modules|vendor|dist|build|coverage|project-memory|handoffs|docs|fixtures)(/|$)'
+$ExcludedScanDirectoryNames = @(
+    '.git', 'node_modules', 'vendor', 'dist', 'build', 'coverage',
+    'project-memory', 'handoffs', 'docs', 'fixtures'
+)
 $ExcludedExtensions = @('.md','.markdown','.rst','.txt','.lock','.map','.png','.jpg','.jpeg','.gif','.webp','.ico','.pdf','.zip','.gz','.tar','.7z','.jar','.dll','.exe','.so','.dylib','.class','.pyc','.pyo','.wasm')
 $ExcludedValidatorNames = @('validate-linux.sh','validate-macos.sh','validate-windows.ps1')
 
-foreach ($File in Get-ChildItem -LiteralPath $Root -Recurse -File -Force) {
+function Get-GovernedFiles {
+    param([Parameter(Mandatory = $true)][string]$Directory)
+
+    foreach ($Child in Get-ChildItem -LiteralPath $Directory -Force) {
+        if (-not $Child.PSIsContainer) {
+            $Child
+            continue
+        }
+
+        if ($ExcludedScanDirectoryNames -contains $Child.Name.ToLowerInvariant()) {
+            continue
+        }
+
+        Get-GovernedFiles -Directory $Child.FullName
+    }
+}
+
+foreach ($File in Get-GovernedFiles -Directory $Root) {
     $Relative = $File.FullName.Substring($RootPrefix.Length).Replace('\','/')
     if ($Relative -match $ExcludedDirectoryPattern) { continue }
 
@@ -358,4 +379,3 @@ Write-Host "Summary: $($script:ErrorCount) error(s), $($script:WarningCount) war
 if ($script:ErrorCount -gt 0) { exit 1 }
 if ($Strict -and $script:WarningCount -gt 0) { exit 2 }
 Write-Host "PASS  Project memory and code trace contract is valid" -ForegroundColor Green
-exit 0

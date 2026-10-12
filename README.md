@@ -6,7 +6,7 @@
 
 It gives an agent a bounded current system map, unfinished work queue, durable rationale, completion evidence, external-handoff intake, task-linked implementation trace, and operating rules for safe delegation, verification, reuse, and shared-repository coordination — without replacing the agent's native planner or turning the repository into a project-management platform.
 
-Current stable release: **v1.4.0**.
+Current stable release: **v1.5.1**.
 
 ## At a glance
 
@@ -28,6 +28,9 @@ The core idea is simple: keep current truth, active work, rationale, and evidenc
 ContextRail is intentionally small, but the operating contract covers more than memory files:
 
 - **bounded context retrieval** instead of loading the whole project history;
+- **completion compaction** so closed-task evidence moves to History while Notes stays focused on active detail and durable rationale;
+- **durable rationale for material agent decisions and deliberate technical debt** without logging trivial local choices;
+- **proven recoverability before destructive or material data-loss-risk work** rather than assuming a backup exists;
 - **external handoff adoption** before implementation;
 - **task-linked code trace** for durable behavior boundaries and principal regression tests;
 - **root-cause-before-patch** guidance for defects;
@@ -98,13 +101,15 @@ Read AGENTS
   -> inspect active ownership / branch / scope when parallel work may exist
   -> inspect only relevant code, tests, logs, and configuration
   -> research proven existing solutions first when substantial custom work may be avoidable
+  -> make only material decisions that fit delegated authority and preserve durable rationale when they constrain future work
+  -> prove an asset-appropriate recovery path before destructive or material data-loss-risk operations
   -> implement with the agent's native planner
   -> delegate only bounded, objectively verifiable work when useful
   -> link durable behavior boundaries and principal tests back to the TASK
   -> run the project's canonical verification
   -> independently review the actual diff and evidence
-  -> record completion in HISTORY
-  -> update SYSTEM if current truth changed
+  -> remove closed work from BOARD, move detailed completion evidence to HISTORY, and compact NOTES to a short stub when useful
+  -> update SYSTEM only if current truth changed
 ```
 
 `HISTORY.md` is searched by exact task or related ID only when prior implementation evidence is needed; it is not loaded by default.
@@ -140,6 +145,38 @@ The task carries the full rationale and relationships. The code comment identifi
 When the behavior is testable, the same task marker belongs on the principal regression test that proves the invariant.
 
 Generated files, vendor code, binaries, lock files, and formats that cannot safely carry comments are not modified for traceability; their implementation boundary stays in task Notes.
+
+### Task lifecycle and completion compaction
+
+ContextRail keeps the four-file model bounded as work closes:
+
+- `BOARD.md` contains only unfinished `proposed`, `active`, or `blocked` tasks;
+- `NOTES.md` contains open/planned task detail plus durable `REQ`, `DEC`, and `RISK` rationale;
+- `HISTORY.md` is canonical for completed/cancelled implementation detail, acceptance proof, test evidence, outcome, and remaining boundary;
+- a closed task may retain only a short Notes stub for exact-ID discoverability;
+- `SYSTEM.md` changes only when completion changed current architecture, flow, interface, ownership, invariants, or known limits.
+
+Strict validation warns on bloated closed-task Notes sections so project memory does not slowly turn into a second chronological history.
+
+### Durable rationale and technical debt
+
+When the user has not already made a material technical choice and the agent is authorized to decide it, the reason belongs in durable project memory when the choice materially constrains future work.
+
+Typical examples include architecture or ownership boundaries, interfaces, security and permissions, data shape or migrations, dependencies/providers, compatibility behavior, cost/performance tradeoffs, scope or acceptance interpretation, and durable invariants.
+
+Rationale does not grant authority: a choice outside the selected task, accepted requirements, security boundary, public contract, or delegated scope still requires user direction.
+
+Deliberate technical debt must record what was deferred, why, its consequence or risk, and a concrete repayment trigger or condition. Trivial local implementation choices do not need durable records.
+
+### Recoverability before destructive change
+
+Before destructive, irreversible, or material data-loss-risk work, the agent establishes a concrete recovery path appropriate to the affected asset.
+
+Tracked source may rely on a known recoverable Git state when existing user changes are preserved. Databases, persistent data, external resources, untracked files, and non-reproducible assets require an appropriate backup, snapshot, export, version, rollback mechanism, or equivalent recovery path whose scope and freshness are understood.
+
+If recoverability cannot reasonably be established, the operation stops. The narrow exception is when permanent destruction of the exact target is itself explicitly user-authorized; that authority does not extend to collateral loss outside the stated scope.
+
+These are semantic operating guardrails, not keyword-validator heuristics. See [Agent safety and rationale guardrails](docs/SAFETY-GUARDRAILS.md).
 
 ### Root cause before patch
 
@@ -307,11 +344,12 @@ ContextRail validators check governance and trace integrity, including:
 - orphan task details;
 - broken `Related`, `Supersedes`, and `Replacement` references;
 - accepted decisions not reflected in current system truth;
+- completed/cancelled Notes sections that remain bloated or duplicate completion detail already canonical in History;
 - task-linked code comments pointing to missing lifecycle or Notes records;
 - task-linked comments without a nearby non-empty invariant;
 - an oversized `SYSTEM.md` that may no longer be a bounded map.
 
-The validator does **not** prove semantic correctness, license compatibility, architecture quality, test adequacy, task ownership, or conflict freedom. Project-native tests remain authoritative for runtime behavior; the separate coordination checker only exposes likely parallel-work collisions.
+The validator does **not** prove semantic correctness, license compatibility, architecture quality, test adequacy, task ownership, conflict freedom, recoverability sufficiency, decision materiality, delegated authority, or technical-debt rationale quality. Project-native tests and operational safeguards remain authoritative for runtime behavior and recovery; the separate coordination checker only exposes likely parallel-work collisions.
 
 ## Clean template contents
 
@@ -349,7 +387,7 @@ scripts/
   check-coordination.ps1
 ```
 
-They deliberately exclude ContextRail's own README, license, changelog, contribution guide, documentation, test fixtures, and development history.
+They deliberately exclude ContextRail's own README, license, changelog, contribution guide, documentation, test fixtures, and development history. For that reason the published `muisik/contextrail-template` mirror is intentionally README-free: public product and adoption documentation lives in this development repository, while the mirror stays byte-equivalent to the clean `template/` payload.
 
 ## Synchronized distribution guarantee
 
@@ -426,6 +464,7 @@ Cancelled tasks use `Cancelled: YYYY-MM-DD` instead of `Completed`.
 
 - [Governance contract](docs/GOVERNANCE.md)
 - [Adoption guide](docs/ADOPTION.md)
+- [Agent safety and rationale guardrails](docs/SAFETY-GUARDRAILS.md)
 - [Release history](CHANGELOG.md)
 - [Latest release](https://github.com/muisik/minimum-governed-harness/releases/latest)
 
@@ -444,7 +483,9 @@ Subsequent 1.x releases extend the operating policy without turning ContextRail 
 - **1.1:** governed delegation;
 - **1.2 / 1.2.1:** non-blocking version awareness and preserved project instructions;
 - **1.3:** reuse-first engineering and license-aware integration boundaries;
-- **1.4:** lightweight shared-repository coordination and explicit separation of repository-shared instructions from personal agent preferences.
+- **1.4:** lightweight shared-repository coordination and explicit separation of repository-shared instructions from personal agent preferences;
+- **1.5.0:** closed-task lifecycle compaction so Board stays unfinished-only, History owns completion evidence, and Notes remains bounded;
+- **1.5.1:** proven recoverability before destructive change plus durable rationale for material agent decisions and deliberate technical debt.
 
 New mechanisms should continue to earn their place through repeated real-world need rather than expanding the harness by default.
 

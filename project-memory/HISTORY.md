@@ -104,3 +104,12 @@ The warning is intentionally heuristic: it detects closed Notes sections over ei
 ### Remaining boundary
 
 ContextRail records and instructs these semantic guardrails but does not prove backup restoreability, decision materiality, or technical-debt rationale quality mechanically. Project-native backup/restore controls, authorization, tests, CI, and operational safeguards remain authoritative.
+
+## TASK-0011 — Refresh public README through ContextRail 1.5.1
+- Status: completed
+- Completed: 2026-10-12
+- Related: DEC-0010, DEC-0011, DEC-0012
+- Evidence: README commit `d826ebd51cd3a07acaf98aa6bf8ea39453aeebc1` updated the public entry point; validation workflow run `38223396649` completed successfully across Linux, macOS, Windows, and published-template consistency; release workflow run `38223396633` was skipped, so no release was republished.
+- Outcome: Updated the public README from the stale v1.4.0 overview to current v1.5.1 behavior, including closed-task lifecycle compaction, durable rationale and technical-debt traceability, proven recoverability before destructive change, expanded validation limits, safety-documentation links, and the 1.5.0/1.5.1 evolution summary. Clarified that `muisik/contextrail-template` intentionally remains README-free because it is the clean byte-equivalent mirror of canonical `template/`.
+- Remaining boundary: The published template repository intentionally does not carry a repository README; public product/adoption documentation remains in `minimum-governed-harness`.
+

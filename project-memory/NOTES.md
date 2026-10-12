@@ -181,3 +181,23 @@ Before a destructive, irreversible, or material data-loss-risk operation, requir
 ### Decision
 
 Keep the agent within the selected task and delegated authority, and keep project memory current when a material decision changes future behavior, constraints, risk, interfaces, architecture, security, dependencies, compatibility, cost/performance tradeoffs, scope interpretation, or deliberate technical debt. When the user has not made that material technical choice and the agent is authorized to decide it, record the decision's durable rationale and material constraints/tradeoffs in the appropriate Notes record rather than leaving the explanation only in chat, private reasoning, scratchpad, or commit prose. If the decision exceeds delegated scope or authority, seek user direction instead of documenting a unilateral choice as though rationale granted permission. Deliberate technical debt must state what was deferred, why, its consequence or risk, and a concrete repayment trigger or condition. Do not create durable records for trivial local implementation choices that do not constrain future work.
+
+## TASK-0011 — Refresh public README through ContextRail 1.5.1
+- Status: active
+- Related: DEC-0010, DEC-0011, DEC-0012
+- Last updated: 2026-10-12
+
+### Scope
+Refresh the development repository README against current canonical system truth, the 1.5.0 and 1.5.1 changelog entries, the distributed AGENTS contract, and the Windows validator parity fix.
+
+### Distribution boundary
+The published `muisik/contextrail-template` repository intentionally has no README because it is a clean mirror of canonical `template/`, and the distributed payload deliberately excludes ContextRail's development README and documentation. Do not add a mirror-only README or ignore it in same-version consistency checks; that would create distribution drift. Keep the template repository byte-equivalent to `template/`.
+
+### Acceptance
+- Stable release is reported as v1.5.1.
+- Typical flow and operating-contract overview include closed-task compaction, durable material-decision/technical-debt rationale, and proven recoverability before destructive work.
+- Validation scope includes lifecycle-compaction behavior and its semantic limits.
+- Documentation links expose the 1.5.1 safety/rationale guide.
+- Stability/evolution summary includes 1.5.0 and 1.5.1.
+- README claims remain consistent with `project-memory/SYSTEM.md`, `CHANGELOG.md`, `template/AGENTS.md`, and the clean-template distribution invariant.
+
